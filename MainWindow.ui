@@ -1,0 +1,437 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>frmMain</class>
+ <widget class="QWidget" name="frmMain">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>835</width>
+    <height>548</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Pourya Shirazian - Computer Graphics LAB FrameWork</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QScrollArea" name="glWidgetArea">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="verticalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="horizontalScrollBarPolicy">
+      <enum>Qt::ScrollBarAlwaysOff</enum>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>579</width>
+        <height>528</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+   <item>
+    <widget class="QToolBox" name="toolBox">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>230</width>
+       <height>530</height>
+      </size>
+     </property>
+     <property name="currentIndex">
+      <number>0</number>
+     </property>
+     <widget class="QWidget" name="tsSettings">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>230</width>
+        <height>476</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Model Settings</string>
+      </attribute>
+      <widget class="QGroupBox" name="groupBox">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>231</width>
+         <height>471</height>
+        </rect>
+       </property>
+       <property name="title">
+        <string>Tool Box</string>
+       </property>
+       <widget class="QPushButton" name="btnClose">
+        <property name="geometry">
+         <rect>
+          <x>150</x>
+          <y>440</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Close</string>
+        </property>
+       </widget>
+       <widget class="QPushButton" name="btnReset">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>440</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>reset</string>
+        </property>
+       </widget>
+       <widget class="QLCDNumber" name="lcdNumber_2">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>89</y>
+          <width>51</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="numDigits">
+         <number>3</number>
+        </property>
+        <property name="value" stdset="0">
+         <double>2.000000000000000</double>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>2</number>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_3">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>140</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Radius Start:</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="seRadiusStart">
+        <property name="geometry">
+         <rect>
+          <x>91</x>
+          <y>140</y>
+          <width>121</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.250000000000000</double>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>40</y>
+          <width>36</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Sectors</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="sectorSlider">
+        <property name="geometry">
+         <rect>
+          <x>52</x>
+          <y>40</y>
+          <width>101</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>3</number>
+        </property>
+        <property name="maximum">
+         <number>30</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLCDNumber" name="lcdNumber">
+        <property name="geometry">
+         <rect>
+          <x>160</x>
+          <y>40</y>
+          <width>51</width>
+          <height>20</height>
+         </rect>
+        </property>
+        <property name="numDigits">
+         <number>3</number>
+        </property>
+        <property name="value" stdset="0">
+         <double>3.000000000000000</double>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>90</y>
+          <width>31</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Stacks</string>
+        </property>
+       </widget>
+       <widget class="QSlider" name="stackSlider">
+        <property name="geometry">
+         <rect>
+          <x>52</x>
+          <y>90</y>
+          <width>101</width>
+          <height>19</height>
+         </rect>
+        </property>
+        <property name="minimum">
+         <number>2</number>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
+        </property>
+        <property name="value">
+         <number>2</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+       </widget>
+       <widget class="QLabel" name="label_4">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>182</y>
+          <width>71</width>
+          <height>16</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Radius End:</string>
+        </property>
+       </widget>
+       <widget class="QDoubleSpinBox" name="seRadiusEnd">
+        <property name="geometry">
+         <rect>
+          <x>91</x>
+          <y>180</y>
+          <width>121</width>
+          <height>22</height>
+         </rect>
+        </property>
+        <property name="singleStep">
+         <double>0.010000000000000</double>
+        </property>
+        <property name="value">
+         <double>0.250000000000000</double>
+        </property>
+       </widget>
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="geometry">
+         <rect>
+          <x>10</x>
+          <y>219</y>
+          <width>201</width>
+          <height>181</height>
+         </rect>
+        </property>
+        <property name="title">
+         <string>Display</string>
+        </property>
+        <widget class="QCheckBox" name="chkWireFrame">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>60</y>
+           <width>131</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Draw WireFrame</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chkPerspective">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>30</y>
+           <width>121</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Perspective View</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chkSurface">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>120</y>
+           <width>131</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Draw Surface</string>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chkCrossSections">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>90</y>
+           <width>131</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Draw Cross Sections</string>
+         </property>
+         <property name="checked">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QCheckBox" name="chkDrawNormals">
+         <property name="geometry">
+          <rect>
+           <x>10</x>
+           <y>150</y>
+           <width>121</width>
+           <height>18</height>
+          </rect>
+         </property>
+         <property name="text">
+          <string>Draw Normals</string>
+         </property>
+        </widget>
+       </widget>
+       <widget class="QPushButton" name="btnCloseCurve">
+        <property name="geometry">
+         <rect>
+          <x>60</x>
+          <y>410</y>
+          <width>75</width>
+          <height>23</height>
+         </rect>
+        </property>
+        <property name="text">
+         <string>Close Curve</string>
+        </property>
+       </widget>
+      </widget>
+     </widget>
+     <widget class="QWidget" name="tsExport">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>230</width>
+        <height>476</height>
+       </rect>
+      </property>
+      <attribute name="label">
+       <string>Export</string>
+      </attribute>
+      <widget class="QPushButton" name="btnExportModel">
+       <property name="geometry">
+        <rect>
+         <x>30</x>
+         <y>20</y>
+         <width>141</width>
+         <height>23</height>
+        </rect>
+       </property>
+       <property name="text">
+        <string>Export Model Settings</string>
+       </property>
+      </widget>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections>
+  <connection>
+   <sender>sectorSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>741</x>
+     <y>88</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>762</x>
+     <y>88</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>stackSlider</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>lcdNumber_2</receiver>
+   <slot>display(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>705</x>
+     <y>131</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>783</x>
+     <y>139</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
+</ui>

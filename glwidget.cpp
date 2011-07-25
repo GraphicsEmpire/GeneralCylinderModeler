@@ -61,6 +61,10 @@ void GLWidget::paintGL()
         vec3f p = m_camera.getCoordinates();
         gluLookAt(p.x, p.y, p.z, 0, 0, 0, 0, 1, 0);
     }
+    else
+    {
+        //Draw the grid Map
+    }
 
 
     //Draw Catmull-Rom Curve Control Points
@@ -143,23 +147,7 @@ void GLWidget::setDrawSurface(bool bDraw)
 
 void GLWidget::closeCurve()
 {
-    int ctCtrlPoints = (int)m_cylinder.m_axisCurve.getCtrlPointsCount();
-    if(ctCtrlPoints < 3)
-        return;
-
-    vec3f v0 = m_cylinder.m_axisCurve.position(0.0f);
-    vec3f t0 = m_cylinder.m_axisCurve.tangent(0.0f);
-    vec3f last = m_cylinder.m_axisCurve.position(1.0f);
-    if(last == v0)
-        return;
-
-    t0.normalize();
-    float halfDist = last.distance(v0) * 0.5f;
-    m_cylinder.m_axisCurve.addPoint(v0 - halfDist * t0);
-    m_cylinder.m_axisCurve.addPoint(v0);
-    m_cylinder.m_axisCurve.addPoint(v0);
-
-    m_cylinder.calc();
+    m_cylinder.closeCurve();
     updateGL();
 }
 
@@ -281,7 +269,7 @@ void GLWidget::mousePressEvent(QMouseEvent *event)
 
             vec3f p;
             p.x = wx; p.y = wy; p.z = 0.0f;
-            m_cylinder.m_axisCurve.addPoint(p);
+            m_cylinder.getProfileCurve().addPoint(p);
             m_cylinder.calc();
         }
 

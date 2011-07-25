@@ -16,9 +16,11 @@
 #include <istream>
 #include "PS_Vector.h"
 
-using namespace PS::MATH;
+#define MIN_CTRL_POINTS_COUNT 4
 
+using namespace PS::MATH;
 typedef unsigned int UINT;
+
 
 struct ARCLENGTHPARAM{
 	float u;//Parameter

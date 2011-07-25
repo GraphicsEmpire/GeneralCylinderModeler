@@ -21,7 +21,9 @@ HEADERS += glwidget.h \
     PS_StringBase.h \
     PS_String.h \
     PS_SplineCatmullRom.h \
-    PS_SplineCatmullRom.h
+    PS_SplineCatmullRom.h \
+    PS_SketchConfig.h \
+    PS_AppConfig.h
 FORMS += MainWindow.ui
 SOURCES += glwidget.cpp \
     main.cpp \
@@ -30,5 +32,8 @@ SOURCES += glwidget.cpp \
     PS_Matrix.cpp \
     PS_ArcBallCamera.cpp \
     PS_String.cpp \
-    PS_SplineCatmullRom.cpp
+    PS_SplineCatmullRom.cpp \
+    CCylinder.cpp \
+    PS_SketchConfig.cpp \
+    PS_AppConfig.cpp
 QT += opengl

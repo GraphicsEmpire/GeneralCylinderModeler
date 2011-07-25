@@ -10,6 +10,12 @@
 #define DEFAULT_RADIUS 0.25f;
 
 using namespace PS::MATH;
+
+namespace PS{
+namespace MODELING{
+
+
+
 class CCylinderBase
 {
 
@@ -137,5 +143,7 @@ private:
     std::vector<vec3f> m_lstNormals;
 };
 
+}
+}
 
 #endif // CCYLINDERBASE_H

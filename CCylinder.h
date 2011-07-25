@@ -6,6 +6,10 @@
 
 #define DEFAULT_STACKS 10
 
+namespace PS{
+namespace MODELING{
+
+
 //Generalized Cylinder
 class CCylinder
 {
@@ -43,83 +47,11 @@ public:
     void setRadiusEnd(const float r2)    {  m_radiusEnd = r2; }
     float getRadiusEnd() const { return m_radiusEnd;}
 
-    void calc()
-    {
-        if(m_axisCurve.getCtrlPointsCount() < 4)
-            return;
-        m_axisCurve.populateTable();
-        if(m_lstStacks.size() > 0)
-        {
-            for(size_t i=0; i< m_lstStacks.size(); i++)
-                m_lstStacks[i].removeAllPoints();
-            m_lstStacks.clear();
-        }
-
-        vec3f xAxis(1.0f, 0.0f, 0.0f);
-        vec3f yAxis(0.0f, 1.0f, 0.0f);
-        vec3f zAxis(0.0f, 0.0f, 1.0f);
-
-        float t = 0.0f;
-        //Current Position + Frenet Frame
-        vec3f T, N, B, P;
-
-        //Previous Frenet Frame
-        vec3f prevN, prevB;
-
-        vec3f A;
-
-        float deltaRadius = (m_radiusEnd - m_radiusStart) / static_cast<float>(m_stacks);
-        float radius = m_radiusStart;
-
-        for (int i=0; i < m_stacks; i++)
-        {
-            radius = m_radiusStart + i * deltaRadius;
-
-            t = static_cast<float>(i)/ static_cast<float>(m_stacks - 1);
-
-            P = m_axisCurve.position(t);
-
-            T = m_axisCurve.tangent(t);
-            T.normalize();
-
-            if(i == 0)
-            {
-                A = m_axisCurve.acceleration(t);
-
-                if(A.length() < EPSILON)
-                    A = T.cross(yAxis);
-                A.normalize();
-
-                //N = normalized(VxQxV)
-                N = T.cross(A.cross(T)); //v = u*w
-                N.normalize();
-
-                //B = TxN
-                B = T.cross(N);
-                B.normalize();
-            }
-            else
-            {
-                N = prevB.cross(T);
-                B = T.cross(N);
-            }
-
-            //Save for Next Iteration
-            prevN = N;
-            prevB = B;
-
-            //At this point we have the frenet frame
-            CCylinderBase base;
-            base.setRadius(radius);
-            base.setSectors(m_sectors);
-            base.setPosition(P);
-            base.setFrenetFrame(T, N, B);
-            base.calc();
-
-
-            m_lstStacks.push_back(base);
-        }
-    }
+    /*!
+     * Computes all cross sections across the profile curve.
+     * Each cross section is oriented using a Frenet Frame.
+     */
+    void calc();
 
     void drawCurveControlPoints(bool bSelectMode = false)
     {
@@ -297,15 +229,21 @@ public:
 
     }
 
+    CSplineCatmullRom& getProfileCurve() {return m_axisCurve;}
+    bool closeCurve();
 
-public:
+private:
     int m_stacks;
     int m_sectors;
     float m_radiusStart;
     float m_radiusEnd;
 
+    //CSplineCatmullRom m_axisCurve;
     CSplineCatmullRom m_axisCurve;
     std::vector<CCylinderBase> m_lstStacks;
 };
+
+}
+}
 
 #endif

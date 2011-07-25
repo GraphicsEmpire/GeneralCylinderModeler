@@ -12,6 +12,7 @@
 #include "PS_ArcBallCamera.h"
 
 using namespace PS::MATH;
+using namespace PS::MODELING;
 typedef enum DragDirection {ddNone, ddLeft, ddRight};
 
 

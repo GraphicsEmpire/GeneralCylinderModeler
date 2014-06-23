@@ -16,7 +16,7 @@
 #include <math.h>
 
 #include "PS_Matrix.h"
-#include "PS_Quaternion.h"
+//#include "PS_Quaternion.h"
 
 namespace PS{
 	namespace MATH{
@@ -62,10 +62,12 @@ void CMatrix::rotate(float x,float y,float z)
 
 void CMatrix::rotate(float angle, float x, float y, float z)
 {
+    /*
 	CQuaternion q;
 	vec3f axis(x,y,z);
 	q.fromAngleAxis(angle, axis);
 	q.toMatrix(*this);
+    */
 }
 
 //***************************************************************************
@@ -167,8 +169,8 @@ CMatrix::CMatrix(const float *quat,const float *pos)
 {
 	if ( quat )
 	{
-		CQuaternion q(quat);
-		q.toMatrix(*this);
+//		CQuaternion q(quat);
+//		q.toMatrix(*this);
 	}
 	else
 	{

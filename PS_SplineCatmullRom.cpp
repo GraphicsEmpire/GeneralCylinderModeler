@@ -37,7 +37,7 @@ CSplineCatmullRom::~CSplineCatmullRom()
 	m_vArcTable.resize(0);
 }
 
-void CSplineCatmullRom::setSegmentsCount(UINT nSegments)
+void CSplineCatmullRom::setSegmentsCount(size_t nSegments)
 {
 	if(nSegments > 0)		
 		m_nSegments = nSegments;

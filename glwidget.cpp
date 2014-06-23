@@ -9,8 +9,9 @@
 #include <math.h>
 
 #include "glwidget.h"
-#include "CMaterial.h"
+#include "PS_Material.h"
 #include "PS_AppConfig.h"
+#include "GL/glu.h"
 
 GLWidget::GLWidget(QWidget *parent)
     : QGLWidget(parent)
@@ -81,7 +82,7 @@ void GLWidget::paintGL()
     {
         glEnable(GL_LIGHTING);
         //glColor3ub(255, 215, 0);
-        setMaterial(mtrlBrass);
+        //setMaterial(mtrlBrass);
         m_cylinder.drawSurface();
 
         glDisable(GL_LIGHTING);

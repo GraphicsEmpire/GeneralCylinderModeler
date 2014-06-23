@@ -24,7 +24,7 @@ public:
 		diffused.zero();
 		specular.zero();
 		shininess = 0.0f;
-	};
+    }
 
 	CMaterial(vec4f amb, vec4f dif, vec4f spec, double shine = DEFAULT_SHININESS)
 	{

@@ -29,14 +29,13 @@ get_cur_dir
 
 #######################################################################
 ## parameters to collect from the user
-## 1. OS (Ubuntu, Yocto, Windows)
+## 1. OS (Ubuntu, Windows)
 ## 2. Build Type (Debug, Release)
 #######################################################################
-BUILD_DIR="${DIR}/build"
-TARGET_OS="ubuntu"
 BUILD_TYPE="release"
+TARGET_OS="ubuntu"
 
-usage() { echo "Usage: $0 [-b <debug/release> ] [-t <ubuntu/yocto>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-b <debug/release> ] [-t <ubuntu/windows>]" 1>&2; exit 1; }
 
 while getopts ":b:t:" o; do
     case "${o}" in
@@ -52,6 +51,7 @@ while getopts ":b:t:" o; do
     esac
 done
 
+BUILD_DIR="${DIR}/build-${TARGET_OS}-${BUILD_TYPE}"
 echo "TARGET_OS=[${TARGET_OS}]"
 echo "BUILD_TYPE=[${BUILD_TYPE}]"
 
@@ -59,7 +59,6 @@ echo "BUILD_TYPE=[${BUILD_TYPE}]"
 echo "Remove old builds"
 rm -rf ${BUILD_DIR}
 mkdir -p ${BUILD_DIR}
-
 
 ################################################
 # Case 1: Standalone build with inidividual dependencies

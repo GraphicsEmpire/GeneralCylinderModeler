@@ -5,6 +5,23 @@ cmake_minimum_required(VERSION 3.2)
 project(gencylinder)
 
 ## add dependencies
+if (NOT DEFINED SWDEPS_ROOT_DIR)
+  if(WIN32)
+    set (SWDEPS_ROOT_DIR "C:/swdeps" CACHE FILEPATH "If swdeps is available, specify its path")
+  endif(WIN32)
+
+  if(UNIX)
+    set (SWDEPS_ROOT_DIR "/swdeps" CACHE FILEPATH "If swdeps is available, specify its path")
+  endif(UNIX)
+endif()
+
+## include swdeps
+include (${SWDEPS_ROOT_DIR}/cmake/nourbrain.cmake)
 
 ## build main source
-add_subdirectory(src)
+#add_subdirectory(src)
+
+# executable
+add_executable(${PROJECT_NAME} src/main.cpp)
+target_link_libraries(${PROJECT_NAME} glfw3)
+install(TARGETS ${PROJECT_NAME} DESTINATION bin)

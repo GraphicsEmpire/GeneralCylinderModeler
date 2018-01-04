@@ -34,6 +34,12 @@ get_cur_dir
 #######################################################################
 BUILD_TYPE="release"
 TARGET_OS="ubuntu"
+unamestr=`uname`
+if [[ "$unamestr" == 'Linux' ]]; then
+   TARGET_OS="ubuntu"
+elif [[ "$unamestr" == 'MINGW64_NT-10.0' ]]; then
+   TARGET_OS="windows"
+fi
 
 usage() { echo "Usage: $0 [-b <debug/release> ] [-t <ubuntu/windows>]" 1>&2; exit 1; }
 
@@ -93,11 +99,13 @@ then
     CPU_CORES_COUNT=${NUMBER_OF_PROCESSORS}
 
     echo "Build for ${TARGET_OS}"
-    cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Visual Studio 14 2015 Win64" ..
+    ##cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Visual Studio 14 2015 Win64" ..
+    cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Visual Studio 15 2017 Win64" ..
     checkabortfailed $?
 
     echo "Add MSBuild to path"
-    export PATH="C:\Program Files (x86)\MSBuild\14.0\Bin":$PATH
+    ##export PATH="C:\Program Files (x86)\MSBuild\14.0\Bin":$PATH
+    export PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin":$PATH
     MSBuild.exe *.sln /maxcpucount:${CPU_CORES_COUNT}
     checkabortfailed $?
 

@@ -37,7 +37,7 @@ TARGET_OS="ubuntu"
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then
    TARGET_OS="ubuntu"
-elif [[ "$unamestr" == 'MINGW64_NT-10.0' ]]; then
+elif [[ "$unamestr" == *"NT"* ]]; then
    TARGET_OS="windows"
 fi
 

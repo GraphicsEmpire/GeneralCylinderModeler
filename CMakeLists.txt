@@ -19,9 +19,8 @@ endif()
 include (${SWDEPS_ROOT_DIR}/cmake/nourbrain.cmake)
 
 ## build main source
-#add_subdirectory(src)
-
 # executable
 add_executable(${PROJECT_NAME} src/main.cpp)
+target_include_directories(${PROJECT_NAME} PUBLIC src/linearalgebra)
 target_link_libraries(${PROJECT_NAME} glfw3)
 install(TARGETS ${PROJECT_NAME} DESTINATION bin)

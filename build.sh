@@ -91,10 +91,10 @@ then
 	checkabortfailed $?
 
   ## make install
-	echo "INFO: make install the project"
-	make install
-	checkabortfailed $?
-  sync
+	# echo "INFO: make install the project"
+	# make install
+	# checkabortfailed $?
+  # sync
 
   popd
 

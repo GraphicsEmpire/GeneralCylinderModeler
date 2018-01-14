@@ -29,7 +29,7 @@ get_cur_dir
 
 #######################################################################
 ## parameters to collect from the user
-## 1. OS (Ubuntu, Windows)
+## 1. OS (ubuntu, macos, windows)
 ## 2. Build Type (Debug, Release)
 #######################################################################
 BUILD_TYPE="release"
@@ -37,11 +37,13 @@ TARGET_OS="ubuntu"
 unamestr=`uname`
 if [[ "$unamestr" == 'Linux' ]]; then
    TARGET_OS="ubuntu"
+elif [[ "$unamestr" == 'Darwin' ]]; then
+   TARGET_OS="macos"
 elif [[ "$unamestr" == *"MINGW"* ]]; then
    TARGET_OS="windows"
 fi
 
-usage() { echo "Usage: $0 [-b <debug/release> ] [-t <ubuntu/windows>]" 1>&2; exit 1; }
+usage() { echo "Usage: $0 [-b <debug/release> ] [-t <ubuntu/macos/windows>]" 1>&2; exit 1; }
 
 while getopts ":b:t:" o; do
     case "${o}" in
@@ -69,18 +71,21 @@ mkdir -p ${BUILD_DIR}
 ################################################
 # Case 1: Standalone build with inidividual dependencies
 ################################################
-if [ "${TARGET_OS}" == "ubuntu" ]
+if [[ "${TARGET_OS}" == "ubuntu" || "${TARGET_OS}" == "macos" ]]
 then
   pushd ${BUILD_DIR}
 	echo "INFO: Build for [${TARGET_OS}]"
-	cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} \
-           -DGLFW_DIR=${GLFW_DIR} \
+	cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DGLFW_DIR=${GLFW_DIR}
 	checkabortfailed $?
 
   echo "INFO: Count number of CPU cores on this machine"
-  CPU_CORES_COUNT=`grep -c ^processor /proc/cpuinfo`
-  echo "INFO: There are [${CPU_CORES_COUNT}] processor cores in this machine"
+  if [ "${TARGET_OS}" == "macos" ]; then
+    CPU_CORES_COUNT=`sysctl -n hw.ncpu`
+  else
+    CPU_CORES_COUNT=`grep -c ^processor /proc/cpuinfo`
+  fi
 
+  echo "INFO: There are [${CPU_CORES_COUNT}] processor cores in this machine"
 	echo "INFO: Build project"
 	make -j${CPU_CORES_COUNT}
 	checkabortfailed $?

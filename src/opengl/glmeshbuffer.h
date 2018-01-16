@@ -19,7 +19,7 @@ namespace opengl {
 enum GLPolygonMode {glRenderModePointCloud = 0x1B00, glRenderModeLine = 0x1B01, glRenderModeFill = 0x1B02};
 
 /*!
- * \brief The GLMeshPartBuffer class
+ * \brief The GLMeshBuffer class
  */
 class GLMeshBuffer : public nb::utils::BindableInterface {
 public:

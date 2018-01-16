@@ -25,10 +25,12 @@ include (${SWDEPS_ROOT_DIR}/cmake/nourbrain.cmake)
 
 ## enable c++11 features
 set (CMAKE_CXX_STANDARD 11)
+set (SOURCE_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/src")
+include_directories(${SOURCE_ROOT})
 
-## build main source
-# executable
-add_executable(${PROJECT_NAME} src/main.cpp src/catmullromcurve.cpp)
-target_include_directories(${PROJECT_NAME} PUBLIC src/ src/linalg)
-target_link_libraries(${PROJECT_NAME} glfw3)
-install(TARGETS ${PROJECT_NAME} DESTINATION bin)
+add_subdirectory(src/linalg)
+add_subdirectory(src/opengl)
+add_subdirectory(src/utils)
+
+# app
+add_subdirectory(src/application)

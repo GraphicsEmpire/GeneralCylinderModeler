@@ -21,8 +21,8 @@ public:
   Vec3<float> GetAcceleration(float t);
 
 protected:
-  vector<float> mRegularPoints;
-  vector<float> mCtrlPoints;
+  std::vector<float> mRegularPoints;
+  std::vector<float> mCtrlPoints;
 };
 
 #endif

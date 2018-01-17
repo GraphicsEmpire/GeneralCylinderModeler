@@ -32,8 +32,8 @@ add_dependencies(nbOpenGLBackend nbLinearAlgebra_static)
 add_library(nbOpenGLBackend_static STATIC ${HEADER_FILES} ${SOURCE_FILES})
 add_dependencies(nbOpenGLBackend_static nbLinearAlgebra_static)
 
-target_link_libraries(nbOpenGLBackend glbinding freetype nbUtils_static nbLinearAlgebra_static)
-target_link_libraries(nbOpenGLBackend_static glbinding freetype nbUtils_static nbLinearAlgebra_static)
+target_link_libraries(nbOpenGLBackend glbinding nbUtils_static nbLinearAlgebra_static)
+target_link_libraries(nbOpenGLBackend_static glbinding nbUtils_static nbLinearAlgebra_static)
 
 
 # Visual Studio Folder

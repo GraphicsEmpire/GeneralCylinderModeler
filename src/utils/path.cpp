@@ -26,9 +26,11 @@ std::string Path::GetExePath()
 {
     char exePath[1024];
 #ifdef PS_OS_MAC
-    uint32_t szExePath;
-    if(_NSGetExecutablePath(exePath, &szExePath) == 0)
+    uint32_t szExePath = sizeof(exePath);
+    if(_NSGetExecutablePath(exePath, &szExePath) == 0) {
+
         exePath[szExePath+1] = 0;
+    }
     else {
         exePath[0] = 0;
         printf("Not enough memory to get exepath. Needs %d\n", szExePath);

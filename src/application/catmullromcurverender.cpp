@@ -2,6 +2,8 @@
 #include "catmullromcurve.h"
 #include "opengl/glmeshbuffer.h"
 #include "opengl/gltransform.h"
+#include "opengl/glshader.h"
+#include "opengl/glselect.h"
 
 #include <functional>
 
@@ -17,6 +19,34 @@ namespace nb {
     class CatmullRomCurveRenderImpl {
     public:
         CatmullRomCurveRenderImpl():mCtrlPointMeshBufferIsValid(false) {
+            //=======================================================
+              //Create the vertex shader
+              const char* vert = GLSL(320 core,
+                  layout(location = 0) in vec3 in_vertex;
+                  uniform mat4 viewMatrix;
+                  uniform mat4 projMatrix;
+
+                  void main()
+                  {
+                      vec4 position = vec4(in_vertex, 1.0);
+                      gl_Position = projMatrix * viewMatrix * position;
+                      frag_color = in_color;
+                  }
+              );
+
+              //create a fragment shader
+              const char* frag = GLSL(320 core,
+                  out vec4 outputF;
+
+                  void main()
+                  {
+                      outputF = vec4(1,0,0,1);
+                  }
+              );
+
+              if(!mRenderShader.CompileFromString(vert, frag)) {
+                  std::cerr << "Unable to compile the shader code" << std::endl;
+              }
         }
 
         virtual ~CatmullRomCurveRenderImpl() {
@@ -59,12 +89,31 @@ namespace nb {
         }
 
 
-        void DrawCtrlPoints() {
+        void DrawCtrlPoints(const nb::linalg::mat4 &modelview,
+                            const nb::linalg::mat4 &projection) {
             if(!mCtrlPointMeshBufferIsValid)
                 return;
 
+            if(!mRenderShader.IsReadyToRun())
+                return;
+
+            //run the shader
+            mRenderShader.Bind();
+
+            //Set all uniform variables
+            {
+                int locModelViewMatrix = mRenderShader.GetUniformLocation("viewMatrix");
+                glUniformMatrix4fv(locModelViewMatrix, 1, false, modelview.GetConstData());
+
+                int locProjMatrix = mRenderShader.GetUniformLocation("projMatrix");
+                glUniformMatrix4fv(locProjMatrix, 1, false, projection.GetConstData());
+            }
+
+
             mCtrlPointsMeshBuffer.Bind();
             mCtrlPointsMeshBuffer.Unbind();
+
+            mRenderShader.Unbind();
         }
 
         void DrawCurveProfile() {
@@ -72,6 +121,7 @@ namespace nb {
             mCurveProfileMeshBuffer.Unbind();
         }
     protected:
+        GLShader mRenderShader;
         GLMeshBuffer mCtrlPointsMeshBuffer;
         GLMeshBuffer mCurveProfileMeshBuffer;
         bool mCtrlPointMeshBufferIsValid;
@@ -104,7 +154,7 @@ namespace nb {
         glModelView.Bind();
 
         if(mDrawCtrlPoints) {
-            mImpl->DrawCtrlPoints();
+            mImpl->DrawCtrlPoints(modelview, projection);
         }
 
         if(mDrawCurveProfile) {

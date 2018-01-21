@@ -6,21 +6,12 @@
 #include <glbinding/ContextInfo.h>
 #include <glbinding/Version.h>
 #include <glbinding/callbacks.h>
-#include <glbinding/gl/gl.h>
+//#include <glbinding/gl/gl.h>
+#include <glbinding/gl32core/gl.h>
 #include <glbinding/Binding.h>
 
-using namespace gl;
 
-//#ifdef PS_OS_LINUX
-
-//#include <GL/gl.h>
-//#include "GL/glu.h"
-
-//#elif defined(PS_OS_APPLE_OSX)
-
-//#include <OpenGL/gl.h>
-//#include <OpenGL/glu.h>
-
-//#endif
+//using namespace gl;
+using namespace gl32core;
 
 #endif

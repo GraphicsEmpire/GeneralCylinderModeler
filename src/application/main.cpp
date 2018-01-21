@@ -1,4 +1,5 @@
 #include <iostream>
+
 #include "opengl/glselect.h"
 #include <GLFW/glfw3.h>
 
@@ -68,6 +69,10 @@ int main(int argc, char *argv[]) {
 
     //create window
     GLFWwindow *w = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APP_NAME, NULL, NULL);
+
+    //Most important: The context should be realized
+    glfwMakeContextCurrent(w);
+
     glfwSetKeyCallback(w, key_handler);
     glfwSetMouseButtonCallback(w, mouse_handler);
 
@@ -80,7 +85,7 @@ int main(int argc, char *argv[]) {
 
     //camera
     gOrthoCamera.reset(new nb::linalg::OrthographicCamera());
-    gOrthoCamera->SetPlanes(0.0f, 1.0f, 0.0f, 1.0f);
+    gOrthoCamera->SetPlanes(-1.0f, 1.0f, -1.0f, 1.0f);
 
     while (!glfwWindowShouldClose(w)) {
         int width, height;

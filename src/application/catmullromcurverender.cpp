@@ -1,6 +1,8 @@
 #include "catmullromcurverender.h"
 #include "catmullromcurve.h"
 #include "opengl/glmeshbuffer.h"
+#include "opengl/gltransform.h"
+
 #include <functional>
 
 using namespace std;
@@ -54,7 +56,6 @@ namespace nb {
                 GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCtrlPointsMeshBuffer.AddFaceArray();
                 mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, ftPoints);
             }
-
         }
 
 
@@ -95,6 +96,13 @@ namespace nb {
     void CatmullRomCurveRender::Render(const nb::linalg::mat4 &modelview,
                                        const nb::linalg::mat4 &projection)
     {
+        GLTransform glModelView(GLTransform::mmModelView, modelview);
+        GLTransform glProjection(GLTransform::mmProjection, projection);
+
+        //bind
+        glProjection.Bind();
+        glModelView.Bind();
+
         if(mDrawCtrlPoints) {
             mImpl->DrawCtrlPoints();
         }
@@ -102,6 +110,9 @@ namespace nb {
         if(mDrawCurveProfile) {
             mImpl->DrawCurveProfile();
         }
+
+        glProjection.Unbind();
+        glModelView.Unbind();
     }
 
     void CatmullRomCurveRender::Sync() {

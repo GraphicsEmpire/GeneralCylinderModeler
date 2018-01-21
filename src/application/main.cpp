@@ -2,6 +2,9 @@
 #include "opengl/glselect.h"
 #include <GLFW/glfw3.h>
 
+//opengl
+#include "opengl/glrenderengine.h"
+
 //curve
 #include "catmullromcurverender.h"
 #include "catmullromcurve.h"
@@ -57,12 +60,13 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    //create window
     GLFWwindow *w = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APP_NAME, NULL, NULL);
     glfwSetKeyCallback(w, key_handler);
     glfwSetMouseButtonCallback(w, mouse_handler);
 
-    //init glbinding
-    glbinding::Binding::initialize();
+    //Init
+    nb::opengl::GLRenderEngine::Init();
 
     //create the curve
     gCurveData.reset(new nb::render::CatmullRomCurve());
@@ -73,6 +77,9 @@ int main(int argc, char *argv[]) {
     gOrthoCamera->SetPlanes(0.0f, 1.0f, 0.0f, 1.0f);
 
     while (!glfwWindowShouldClose(w)) {
+        int width, height;
+        glfwGetWindowSize(w, &width, &height);
+        nb::opengl::GLRenderEngine::PreRender(0, 0, width, height);
 
         //render
         curverender->Render(gOrthoCamera->GetViewMatrix(0), gOrthoCamera->GetProjectionMatrix(0));

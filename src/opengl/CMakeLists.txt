@@ -26,10 +26,10 @@ file(GLOB HEADER_FILES
 #########################################################
 #Linking
 #########################################################
-add_library(nbOpenGLBackend SHARED ${HEADER_FILES} ${SOURCE_FILES})
+add_library(nbOpenGLBackend SHARED ${HEADER_FILES} ${SOURCE_FILES} glrenderengine.h glrenderengine.cpp)
 add_dependencies(nbOpenGLBackend nbLinearAlgebra_static)
 
-add_library(nbOpenGLBackend_static STATIC ${HEADER_FILES} ${SOURCE_FILES})
+add_library(nbOpenGLBackend_static STATIC ${HEADER_FILES} ${SOURCE_FILES} glrenderengine.h glrenderengine.cpp)
 add_dependencies(nbOpenGLBackend_static nbLinearAlgebra_static)
 
 target_link_libraries(nbOpenGLBackend glbinding nbUtils_static nbLinearAlgebra_static)

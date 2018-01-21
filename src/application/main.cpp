@@ -1,7 +1,6 @@
 #include <iostream>
 
 #include "opengl/glselect.h"
-#include <GLFW/glfw3.h>
 
 //opengl
 #include "opengl/glrenderengine.h"
@@ -50,6 +49,7 @@ void mouse_handler(GLFWwindow *w, int button, int action, int mods) {
 
         gCurveData->AddCtrlPoint(nb::linalg::Vec3<float>(ndc_x, ndc_y, 0.0));
         cout << "CtrlPoints# " << gCurveData->CountCtrlPoints() << endl;
+        flush(std::cout);
     }
 }
 
@@ -61,11 +61,13 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    /*
     glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE);
+    */
 
     //create window
     GLFWwindow *w = glfwCreateWindow(WINDOW_WIDTH, WINDOW_HEIGHT, APP_NAME, NULL, NULL);

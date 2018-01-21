@@ -12,17 +12,19 @@ include_directories(..
 ## add source files
 #########################################################
 file(GLOB SOURCE_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.c
+        glvertexarray.cpp
+        glfacearray.cpp
+        glmeshbuffer.cpp
+        glrenderengine.cpp
+        glshader.cpp
         ${LODEPNG_DIR}/lodepng.cpp
+        ${GLAD_DIR}/src/glad.c
         )
 
 file(GLOB HEADER_FILES
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.hpp
-        ${CMAKE_CURRENT_SOURCE_DIR}/*.h
-        ${LODEPNG_DIR}/lodepng.h
-        )
-
+        gltypes.h
+        glselect.h
+    )
 #########################################################
 #Linking
 #########################################################
@@ -32,8 +34,8 @@ add_dependencies(nbOpenGLBackend nbLinearAlgebra_static)
 add_library(nbOpenGLBackend_static STATIC ${HEADER_FILES} ${SOURCE_FILES} glrenderengine.h glrenderengine.cpp)
 add_dependencies(nbOpenGLBackend_static nbLinearAlgebra_static)
 
-target_link_libraries(nbOpenGLBackend glbinding nbUtils_static nbLinearAlgebra_static)
-target_link_libraries(nbOpenGLBackend_static glbinding nbUtils_static nbLinearAlgebra_static)
+target_link_libraries(nbOpenGLBackend nbUtils_static nbLinearAlgebra_static glfw3)
+target_link_libraries(nbOpenGLBackend_static nbUtils_static nbLinearAlgebra_static glfw3)
 
 
 # Visual Studio Folder

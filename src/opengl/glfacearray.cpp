@@ -1,8 +1,6 @@
 #include "glfacearray.h"
 #include "glselect.h"
 
-using namespace gl;
-
 namespace nb {
 namespace opengl {
 
@@ -43,7 +41,7 @@ void GLFaceArray::Bind() {
 
     // Draw the faces
     glDrawElements(
-        (gl::GLenum)m_ftype,      // mode
+        (GLenum)m_ftype,      // mode
         m_count,    // count
         GL_UNSIGNED_INT,   // type
         (void*)0           // element array buffer offset

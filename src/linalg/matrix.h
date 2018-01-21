@@ -58,7 +58,7 @@ public:
      * \brief GetElements assign elements to an output array in Col-Major. This function essentially does a mem-copy
      * \param values in column major format
      */
-    void GetElements(T values[mElementsCount]);
+    void GetElements(T values[]);
 
 
     void Print() const;
@@ -185,7 +185,7 @@ void Matrix4x4<T>::CopyFromRowMajor(const T *values) {
 }
 
 template<typename T>
-void Matrix4x4<T>::GetElements(T *values)
+void Matrix4x4<T>::GetElements(T values[])
 {
     memcpy(values, this->mElems, mElementsCount * sizeof(T));
 }

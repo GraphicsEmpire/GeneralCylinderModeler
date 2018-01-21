@@ -2,7 +2,6 @@
 #include "glselect.h"
 #include "utils/logger.h"
 
-using namespace gl;
 using namespace nb::utils;
 
 namespace nb {
@@ -27,7 +26,7 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
 
     //check layout
     for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = layouts[i].attributes.size();
+        U32 attribs_count = (U32)layouts[i].attributes.size();
         U32 vertex_packet_size = 0;
 
         //sum up the dimension of all attributes in this layout
@@ -54,7 +53,7 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
 
     //per each layout
     for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = layouts[i].attributes.size();
+        U32 attribs_count = (U32)layouts[i].attributes.size();
         AttributeLayoutType layoutType = layouts[i].layoutType;
 
         //compute vertex packet size
@@ -88,32 +87,8 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
             }
 
             //3. set vertex attrib pointers
-            switch(attr.attrib) {
-            case vatPosition:
-                glEnableClientState(GL_VERTEX_ARRAY);
-                glVertexPointer(attr.dim, GL_FLOAT, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-                break;
-
-            case vatColor:
-                glEnableClientState(GL_COLOR_ARRAY);
-                glColorPointer(attr.dim, GL_FLOAT, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-                break;
-
-            case vatNormal:
-                glEnableClientState(GL_NORMAL_ARRAY);
-                glNormalPointer(GL_FLOAT, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-                break;
-
-            case vatTexCoord:
-                glEnableClientState(GL_TEXTURE_2D_ARRAY);
-                glTexCoordPointer(attr.dim, GL_FLOAT, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-                break;
-
-            case vatGeneric:
-                glEnableVertexAttribArray(attr.gpuGenericVertexAttribArrayIndex);
-                glVertexAttribPointer(attr.gpuGenericVertexAttribArrayIndex, attr.dim, GL_FLOAT, GL_FALSE, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-                break;
-            }
+            glEnableVertexAttribArray(attr.gpuGenericVertexAttribArrayIndex);
+            glVertexAttribPointer(attr.gpuGenericVertexAttribArrayIndex, attr.dim, GL_FLOAT, GL_FALSE, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
 
             //accumulate offset
             prev_batch_bytes_offset += count_vertices * attr.dim * sizeof(float);

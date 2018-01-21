@@ -18,15 +18,6 @@ void GLMeshBuffer::Bind()
 {
     glPolygonMode(GL_FRONT_AND_BACK, GLenum(mPolygonRenderMode));
 
-    //1. bind transform
-    if(mTransform)
-        mTransform->Bind();
-
-    //2. bind material or texture or both
-    if(mMaterial)
-        mMaterial->Bind();
-//    if(mTexture)
-//        mTexture->Bind();
 
     //3. bind all vertex attributes
     for(U32 i=0; i < mVertexAttribs.size(); i++) {
@@ -38,9 +29,6 @@ void GLMeshBuffer::Bind()
         mFaceArrays[i]->Bind();
     }
 
-    //5. unbind the transform
-    if(mTransform)
-        mTransform->Unbind();
 }
 
 void GLMeshBuffer::Unbind()
@@ -54,12 +42,6 @@ void GLMeshBuffer::Unbind()
     for(U32 i=0; i < mVertexAttribs.size(); i++) {
         mVertexAttribs[i]->Unbind();
     }
-
-    //3. unbind material or texture or both
-//    if(mTexture)
-//        mTexture->Unbind();
-    if(mMaterial)
-        mMaterial->Unbind();
 }
 
 void GLMeshBuffer::Clear()
@@ -111,21 +93,6 @@ U32 GLMeshBuffer::CountFaceArrays() const
 void GLMeshBuffer::SetPolygonRenderMode(GLPolygonMode mode)
 {
     mPolygonRenderMode = mode;
-}
-
-void GLMeshBuffer::SetMaterial(const shared_ptr<GLMaterial> &material)
-{
-    mMaterial = material;
-}
-
-//void GLMeshBuffer::SetTexture(const shared_ptr<GLTexture> &texture)
-//{
-//    mTexture = texture;
-//}
-
-void GLMeshBuffer::SetTransform(const shared_ptr<GLTransform> &transform)
-{
-    mTransform = transform;
 }
 
 bool GLMeshBuffer::IsVertexAttribArrayIndex(U32 index) const

@@ -20,7 +20,7 @@ float ArcBallCamera::GetTiltAngleInDegrees() const
 
 void ArcBallCamera::SetTiltAngleInDegrees(float tiltInDegrees)
 {
-    Clamp<float>(tiltInDegrees, EPSILON, 180.0 - EPSILON);
+    Clamp<float>(tiltInDegrees, EPSILON, 180.0f - EPSILON);
     mTilt = DEGTORAD(tiltInDegrees);
     ComputeCameraLocation();
 }

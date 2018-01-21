@@ -6,9 +6,6 @@
 #include "utils/bindableinterface.h"
 #include "glvertexarray.h"
 #include "glfacearray.h"
-#include "glmaterial.h"
-#include "glattribs.h"
-#include "gltransform.h"
 //#include "gltexture.h"
 
 using namespace std;
@@ -44,25 +41,6 @@ public:
 
     void SetPolygonRenderMode(GLPolygonMode mode);
 
-    /*!
-     * \brief setMaterial assigns a material to this meshpart buffer
-     * \param material
-     */
-    void SetMaterial(const shared_ptr<GLMaterial> &material);
-
-
-
-    /*!
-     * \brief setTexture assigns a texture to this meshpart buffer
-     * \param texture
-     */
-    //void SetTexture(const shared_ptr<GLTexture> &texture);
-
-    /*!
-     * \brief setTransform assigns a transformation to this meshpart buffer
-     * \param transform
-     */
-    void SetTransform(const shared_ptr<GLTransform> &transform);
 
 protected:
     void Setup();
@@ -73,9 +51,6 @@ protected:
     vector<GLVertexArrayPtrType> mVertexAttribs;
     vector<GLFaceArrayPtrType> mFaceArrays;
     GLPolygonMode mPolygonRenderMode;
-    shared_ptr<GLMaterial>  mMaterial;    
-    shared_ptr<GLTransform> mTransform;
-    //shared_ptr<GLTexture>   mTexture;
 };
 
 typedef nb::utils::BindableCollection<GLMeshBuffer> GLMeshBufferCollection;

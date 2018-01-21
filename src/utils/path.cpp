@@ -11,7 +11,7 @@
 #elif defined(PS_OS_WINDOWS)
     #include <io.h>
     #include "Windows.h"
-    #include "dirent/include/dirent.h"
+    #include "dirent.h"
 #elif defined(PS_OS_LINUX)
     #include <sys/types.h>
     #include <sys/stat.h>

@@ -8,7 +8,6 @@
 #include "utils/path.h"
 #include "utils/logger.h"
 
-using namespace gl;
 using namespace nb::utils;
 
 

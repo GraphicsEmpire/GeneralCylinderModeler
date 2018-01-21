@@ -1,12 +1,12 @@
 #include "catmullromcurverender.h"
 #include "catmullromcurve.h"
 #include "opengl/glmeshbuffer.h"
-#include "opengl/gltransform.h"
 #include "opengl/glshader.h"
 #include "opengl/glselect.h"
-#include "opengl/glattribs.h"
 
 #include <functional>
+#include <algorithm>
+#include <iterator>
 
 using namespace std;
 using namespace nb::opengl;
@@ -60,7 +60,7 @@ namespace nb {
                   layout.buffer.resize(0);
                   float vertices[9] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
                   unsigned vsize = sizeof(vertices) / sizeof(float);
-                  std::copy(&vertices[0], & vertices[vsize], back_inserter(layout.buffer));
+                  std::copy(&vertices[0], & vertices[vsize], std::back_inserter(layout.buffer));
 
                   layout.layoutType = GLVertexArray::altSeparate;
                   layout.attributes.push_back(attr);
@@ -116,14 +116,12 @@ namespace nb {
 
         void DrawCtrlPoints(const nb::linalg::mat4 &modelview,
                             const nb::linalg::mat4 &projection) {
-            if(!mCtrlPointMeshBufferIsValid)
-                return;
+//            if(!mCtrlPointMeshBufferIsValid)
+//                return;
 
             if(!mRenderShader.IsReadyToRun())
                 return;
 
-            //scoped attribs
-            GLScopedAttributeStorage scoped_attribs;
             glPointSize(5.0);
 
             //run the shader
@@ -139,8 +137,8 @@ namespace nb {
             }
 
             //
-            //mCtrlPointsMeshBuffer.Bind();
-            //mCtrlPointsMeshBuffer.Unbind();
+//            mCtrlPointsMeshBuffer.Bind();
+//            mCtrlPointsMeshBuffer.Unbind();
             mTriangleMeshBuffer.Bind();
             mTriangleMeshBuffer.Unbind();
 
@@ -177,14 +175,7 @@ namespace nb {
 
     void CatmullRomCurveRender::Render(const nb::linalg::mat4 &modelview,
                                        const nb::linalg::mat4 &projection)
-    {
-        GLTransform glModelView(GLTransform::mmModelView, modelview);
-        GLTransform glProjection(GLTransform::mmProjection, projection);
-
-        //bind
-        glProjection.Bind();
-        glModelView.Bind();
-
+    {           
         if(mDrawCtrlPoints) {
             mImpl->DrawCtrlPoints(modelview, projection);
         }
@@ -192,9 +183,6 @@ namespace nb {
         if(mDrawCurveProfile) {
             mImpl->DrawCurveProfile();
         }
-
-        glModelView.Unbind();
-        glProjection.Unbind();        
     }
 
     void CatmullRomCurveRender::Sync() {

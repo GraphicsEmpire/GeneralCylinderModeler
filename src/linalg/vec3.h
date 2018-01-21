@@ -98,7 +98,7 @@ inline void Vec3<T>::Normalize(){
         T len = sqrt(x*x + y*y + z*z);
         if(len == 0.0)
                 return;
-    T dInv = 1.0 / len;
+    T dInv = (T)1.0 / len;
     x *= dInv;
     y *= dInv;
     z *= dInv;

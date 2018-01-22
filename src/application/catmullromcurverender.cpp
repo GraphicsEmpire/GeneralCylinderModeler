@@ -137,8 +137,8 @@ namespace nb {
             }
 
             //
-//            mCtrlPointsMeshBuffer.Bind();
-//            mCtrlPointsMeshBuffer.Unbind();
+            mCtrlPointsMeshBuffer.Bind();
+            mCtrlPointsMeshBuffer.Unbind();
             mTriangleMeshBuffer.Bind();
             mTriangleMeshBuffer.Unbind();
 
@@ -188,7 +188,7 @@ namespace nb {
     void CatmullRomCurveRender::Sync() {
 
         //syncs the geometry data with opengl mesh buffers
-        //mImpl->Sync(*mCurveData);
+        mImpl->Sync(*mCurveData);
 
     }
 

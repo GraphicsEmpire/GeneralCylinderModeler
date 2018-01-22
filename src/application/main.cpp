@@ -53,6 +53,12 @@ void mouse_handler(GLFWwindow *w, int button, int action, int mods) {
     }
 }
 
+void fb_resize_handler(GLFWwindow* window, int width, int height) {
+    nb::opengl::GLRenderEngine::PreRender(0, 0, width, height);
+
+    std::cout << "FB Resized to [" << width << " x " << height << "]" << std::endl;
+}
+
 int main(int argc, char *argv[]) {
     cout << "INFO: gencylinder starts" << endl;
 
@@ -75,6 +81,7 @@ int main(int argc, char *argv[]) {
 
     glfwSetKeyCallback(w, key_handler);
     glfwSetMouseButtonCallback(w, mouse_handler);
+    glfwSetFramebufferSizeCallback(w, fb_resize_handler);
 
     //Init
     nb::opengl::GLRenderEngine::Init();
@@ -89,7 +96,7 @@ int main(int argc, char *argv[]) {
 
     while (!glfwWindowShouldClose(w)) {
         int width, height;
-        glfwGetWindowSize(w, &width, &height);
+        glfwGetFramebufferSize(w, &width, &height);
         nb::opengl::GLRenderEngine::PreRender(0, 0, width, height);
 
         //render

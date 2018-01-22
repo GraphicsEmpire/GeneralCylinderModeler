@@ -58,7 +58,7 @@ namespace nb {
                   GLVertexArray::AttributeLayout attr(3, GLVertexArray::vatPosition, 0);
                   GLVertexArray::VertexBufferLayout layout;
                   layout.buffer.resize(0);
-                  float vertices[9] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
+                  float vertices[9] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
                   unsigned vsize = sizeof(vertices) / sizeof(float);
                   std::copy(&vertices[0], & vertices[vsize], std::back_inserter(layout.buffer));
 

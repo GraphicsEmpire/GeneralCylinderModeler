@@ -28,7 +28,7 @@ public:
         AttributeLayout() {}
         AttributeLayout(U32 dim_,
                         VertexAttributeType attrib_,
-                        int generic_index_ = -1):dim(dim_), attrib(attrib_), gpuGenericVertexAttribArrayIndex(generic_index_) {}
+                        int gpu_attribute_layout_index_ = -1):dim(dim_), attrib(attrib_), gpuGenericVertexAttribArrayIndex(gpu_attribute_layout_index_) {}
 
         U32 dim;
         VertexAttributeType attrib;

@@ -1,3 +1,13 @@
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
 #include "catmullromcurverender.h"
 #include "catmullromcurve.h"
 #include "opengl/glmeshbuffer.h"
@@ -53,10 +63,10 @@ namespace nb {
               mTriangleMeshBuffer.Clear();
               GLMeshBuffer::GLVertexArrayPtrType vbo = mTriangleMeshBuffer.AddVertexAttribArray();
 
-              vector<GLVertexArray::VertexBufferLayout> vLayouts;
+              vector<GLVertexArray::GLVertexBufferLayout> vLayouts;
               {
-                  GLVertexArray::AttributeLayout attr(3, GLVertexArray::vatPosition, 0);
-                  GLVertexArray::VertexBufferLayout layout;
+                  GLVertexArray::GLVertexAttribute attr(GLVertexArray::kPosition, 3);
+                  GLVertexArray::GLVertexBufferLayout layout;
                   layout.buffer.resize(0);
                   float vertices[9] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
                   unsigned vsize = sizeof(vertices) / sizeof(float);
@@ -90,11 +100,11 @@ namespace nb {
             GLMeshBuffer::GLVertexArrayPtrType vboCtrlPoints = mCtrlPointsMeshBuffer.AddVertexAttribArray();
 
             //positions
-            vector<GLVertexArray::VertexBufferLayout> vboCtrlPointsLayout;
+            vector<GLVertexArray::GLVertexBufferLayout> vboCtrlPointsLayout;
             if(cdata.CountCtrlPoints() > 0) {
 
-                GLVertexArray::AttributeLayout attr(3, GLVertexArray::vatPosition, 0);
-                GLVertexArray::VertexBufferLayout layout;
+                GLVertexArray::GLVertexAttribute attr(GLVertexArray::kPosition, 3);
+                GLVertexArray::GLVertexBufferLayout layout;
                 layout.buffer = cdata.GetCtrlPoints();
                 layout.layoutType = GLVertexArray::altSeparate;
                 layout.attributes.push_back(attr);

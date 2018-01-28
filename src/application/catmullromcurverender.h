@@ -1,3 +1,13 @@
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
 #ifndef CATMULLROMCURVERENDER_H
 #define CATMULLROMCURVERENDER_H
 

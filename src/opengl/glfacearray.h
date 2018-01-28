@@ -1,5 +1,15 @@
-#ifndef GLFACEARRAY_H
-#define GLFACEARRAY_H
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
+#ifndef LIBUMF_OPENGL_GLFACEARRAY_H
+#define LIBUMF_OPENGL_GLFACEARRAY_H
 
 #include <vector>
 #include "utils/bindableinterface.h"
@@ -38,4 +48,4 @@ protected:
 }
 }
 
-#endif // GLFACEARRAY_H
+#endif // LIBUMF_OPENGL_GLFACEARRAY_H

@@ -1,5 +1,15 @@
-#ifndef GLVERTEXARRAY_H_
-#define GLVERTEXARRAY_H_
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
+#ifndef LIBUMF_OPENGL_GLVERTEXARRAY_H
+#define LIBUMF_OPENGL_GLVERTEXARRAY_H
 
 #include <vector>
 #include "utils/bindableinterface.h"
@@ -10,39 +20,45 @@ using namespace std;
 namespace nb {
 namespace opengl {
 
-
-//enum VertexAttributeType {vatVertex, vatColor, vatNormal, vatTexCoord };
-
-
+/*!
+ * GLVertexArray provides an opengl vertex buffer to store the vertex data on the GPU memory.
+ */
 class GLVertexArray : public nb::utils::BindableInterface {
 public:
     GLVertexArray();
     virtual ~GLVertexArray();
 
-    enum VertexAttributeType { vatPosition, vatColor, vatNormal, vatTexCoord, vatGeneric };
+    enum VertexAttributeIndex : U32 { kPosition = 0x0, kNormal = 0x1, kTexture = 0x2, kColor = 0x3, kWeight = 0x4 };
     enum AttributeLayoutType { altSeparate, altSequentialBatch, altInterleave };
 
 
     //Attribute layout
-    struct AttributeLayout {
-        AttributeLayout() {}
-        AttributeLayout(U32 dim_,
-                        VertexAttributeType attrib_,
-                        int generic_index_ = -1):dim(dim_), attrib(attrib_), gpuGenericVertexAttribArrayIndex(generic_index_) {}
-
-        U32 dim;
-        VertexAttributeType attrib;
-        int gpuGenericVertexAttribArrayIndex;
+    class GLVertexAttribute {
+    public:
+        GLVertexAttribute():mIndex(kPosition), mCount(0) {}
+        GLVertexAttribute(VertexAttributeIndex index,
+                          U32 count):mIndex(index), mCount(count) {}
+    public:
+        VertexAttributeIndex mIndex;
+        U32 mCount;
     };
 
+
     //Complete buffer layout
-    struct VertexBufferLayout {
+    struct GLVertexBufferLayout {
         AttributeLayoutType layoutType;
-        vector<AttributeLayout> attributes;
+        vector<GLVertexAttribute> attributes;
         vector<float> buffer;
     };
 
-    bool Import(U32 count_vertices, const VertexBufferLayout *layouts, U32 count_layouts);
+    /*!
+     * Reads in a vertex data buffer to the gpu memory
+     * @param count_vertices number of vertices to read in
+     * @param layouts an array representing the buffer layout
+     * @param count_layouts number of buffer layouts supplied
+     * @return true when vertex data is imported successfully
+     */
+    bool Import(U32 count_vertices, const GLVertexBufferLayout *layouts, U32 count_layouts);
 
 
     void Bind() override;

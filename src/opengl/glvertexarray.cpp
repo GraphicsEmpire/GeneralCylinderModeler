@@ -1,3 +1,13 @@
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
 #include "glvertexarray.h"
 #include "glselect.h"
 #include "utils/logger.h"
@@ -17,7 +27,7 @@ GLVertexArray::~GLVertexArray() {
     clear();
 }
 
-bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBufferLayout *layouts, U32 count_layouts)
+bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::GLVertexBufferLayout *layouts, U32 count_layouts)
 {
     if(count_layouts == 0 || layouts == NULL) {
         nbLogError("Invalid layout input");
@@ -26,13 +36,13 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
 
     //check layout
     for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = (U32)layouts[i].attributes.size();
+        U32 attribs_count = layouts[i].attributes.size();
         U32 vertex_packet_size = 0;
 
         //sum up the dimension of all attributes in this layout
         for(U32 j=0; j < attribs_count; j++) {
-            AttributeLayout attr = layouts[i].attributes[j];
-            vertex_packet_size += attr.dim;
+            GLVertexAttribute attr = layouts[i].attributes[j];
+            vertex_packet_size += attr.mCount;
         }
 
         U32 rem = layouts[i].buffer.size() % vertex_packet_size;
@@ -53,14 +63,14 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
 
     //per each layout
     for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = (U32)layouts[i].attributes.size();
+        U32 attribs_count = layouts[i].attributes.size();
         AttributeLayoutType layoutType = layouts[i].layoutType;
 
         //compute vertex packet size
         U32 vertex_packet_size = 0;
         for(U32 j=0; j < attribs_count; j++) {
-            AttributeLayout attr = layouts[i].attributes[j];
-            vertex_packet_size += attr.dim;
+            GLVertexAttribute attr = layouts[i].attributes[j];
+            vertex_packet_size += attr.mCount;
         }
 
         //create the only vertex buffer object
@@ -77,21 +87,21 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::VertexBuffer
         U64 prev_batch_bytes_offset = 0;
         for(U32 j=0; j < attribs_count; j++) {
 
-            AttributeLayout attr = layouts[i].attributes[j];
+            GLVertexAttribute attribute = layouts[i].attributes[j];
             U64 byte_offset = 0;
             if(layoutType == altInterleave) {
-                byte_offset = attr.dim * sizeof(float);
+                byte_offset = attribute.mCount * sizeof(float);
             }
             else if(layoutType == altSequentialBatch) {
                 byte_offset = prev_batch_bytes_offset;
             }
 
-            //3. set vertex attrib pointers
-            glEnableVertexAttribArray(attr.gpuGenericVertexAttribArrayIndex);
-            glVertexAttribPointer(attr.gpuGenericVertexAttribArrayIndex, attr.dim, GL_FLOAT, GL_FALSE, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
+            //3. set vertex attrib array
+            glEnableVertexAttribArray(attribute.mIndex);
+            glVertexAttribPointer(attribute.mIndex, attribute.mCount, GL_FLOAT, GL_FALSE, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
 
             //accumulate offset
-            prev_batch_bytes_offset += count_vertices * attr.dim * sizeof(float);
+            prev_batch_bytes_offset += count_vertices * attribute.mCount * sizeof(float);
         } //attribs
 
         //4. unbind buffer

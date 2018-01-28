@@ -15,6 +15,9 @@ file(GLOB SOURCE_FILES
         glvertexarray.cpp
         glfacearray.cpp
         glmeshbuffer.cpp
+        glpixeldefinitionadapter.cpp
+        gltexture.cpp
+        glerror.cpp
         glrenderengine.cpp
         glshader.cpp
         ${LODEPNG_DIR}/lodepng.cpp

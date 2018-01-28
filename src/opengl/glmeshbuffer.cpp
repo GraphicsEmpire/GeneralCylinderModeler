@@ -1,3 +1,13 @@
+//
+// Project gencylinder
+//
+// Created on   : Aug 24, 2017
+// Last Updated : Jan 01, 2018
+// Author       : Pourya Shirazian <pourya.shirazian@intusurg.com>
+//
+//----------------------------------------------------------------------------------
+//
+
 #include "glmeshbuffer.h"
 #include "glselect.h"
 
@@ -17,7 +27,6 @@ GLMeshBuffer::~GLMeshBuffer()
 void GLMeshBuffer::Bind()
 {
     glPolygonMode(GL_FRONT_AND_BACK, GLenum(mPolygonRenderMode));
-
 
     //3. bind all vertex attributes
     for(U32 i=0; i < mVertexAttribs.size(); i++) {
@@ -42,6 +51,7 @@ void GLMeshBuffer::Unbind()
     for(U32 i=0; i < mVertexAttribs.size(); i++) {
         mVertexAttribs[i]->Unbind();
     }
+
 }
 
 void GLMeshBuffer::Clear()

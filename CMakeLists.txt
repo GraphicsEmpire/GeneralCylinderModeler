@@ -31,6 +31,7 @@ include_directories(${SOURCE_ROOT})
 add_subdirectory(src/linalg)
 add_subdirectory(src/opengl)
 add_subdirectory(src/utils)
+add_subdirectory(src/render)
 
 # app
 add_subdirectory(src/application)

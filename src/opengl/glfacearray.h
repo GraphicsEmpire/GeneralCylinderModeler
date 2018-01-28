@@ -34,14 +34,17 @@ public:
     void Bind() override;
     void Unbind() override;
 
+    GLFaceType GetFaceType() const;
+    void SetFaceType(const GLFaceType& ftype);
+
 protected:
     void clear();
 
 protected:
-    U32 m_ebo;
-    U32 m_count;
-    GLFaceType m_ftype;
-    bool m_ready;
+    U32 mIBO;
+    U32 mCount;
+    GLFaceType mFaceType;
+    bool mInitialized;
 };
 
 

@@ -16,8 +16,8 @@ namespace opengl {
 
 GLFaceArray::GLFaceArray()
 {
-    m_ready = false;
-    m_ebo = 0;
+    mInitialized = false;
+    mIBO = 0;
 }
 
 GLFaceArray::~GLFaceArray() {
@@ -30,29 +30,29 @@ bool GLFaceArray::Import(const vector<U32> &indices, GLFaceType ftype) {
 
     clear();
 
-    glGenBuffers(1, &m_ebo);
+    glGenBuffers(1, &mIBO);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(U32), &indices[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
     //hold extra data
-    m_count = indices.size();
-    m_ftype = ftype;
-    m_ready = true;
+    mCount = indices.size();
+    mFaceType = ftype;
+    mInitialized = true;
     return true;
 }
 
 void GLFaceArray::Bind() {
-    if(!m_ready)
+    if(!mInitialized)
         return;
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_ebo);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, mIBO);
 
     // Draw the faces
     glDrawElements(
-        (GLenum)m_ftype,      // mode
-        m_count,    // count
+        (GLenum)mFaceType,      // mode
+        mCount,    // count
         GL_UNSIGNED_INT,   // type
         (void*)0           // element array buffer offset
     );
@@ -62,12 +62,22 @@ void GLFaceArray::Unbind() {
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 }
 
+GLFaceType GLFaceArray::GetFaceType() const
+{
+    return mFaceType;
+}
+
+void GLFaceArray::SetFaceType(const GLFaceType &ftype)
+{
+    mFaceType = ftype;
+}
+
 void GLFaceArray::clear()
 {
-    if(!m_ready)
+    if(!mInitialized)
         return;
-    if(glIsBuffer(m_ebo))
-        glDeleteBuffers(1, &m_ebo);
+    if(glIsBuffer(mIBO))
+        glDeleteBuffers(1, &mIBO);
 }
 
 }

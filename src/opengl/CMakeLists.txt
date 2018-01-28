@@ -1,6 +1,4 @@
 #cmake file to compile nbOpenGLBackend lib
-cmake_minimum_required(VERSION 3.2)
-
 #########################################################
 ## other include files
 #########################################################

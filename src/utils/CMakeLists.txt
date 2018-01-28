@@ -1,6 +1,4 @@
 #cmake file to compile nbUtils library
-cmake_minimum_required(VERSION 3.2)
-
 #########################################################
 ## enable pthread
 #########################################################

@@ -31,7 +31,7 @@ namespace nb {
     public:
         CatmullRomCurveRenderImpl():mCtrlPointMeshBufferIsValid(false) {
             //=======================================================
-              //Create the vertex shader
+              //create the vertex shader
               const char* vert = GLSL(410,
                   layout(location = 0) in vec3 in_vertex;
                   uniform mat4 viewMatrix;
@@ -44,7 +44,7 @@ namespace nb {
                   }
               );
 
-              //create a fragment shader
+              //create the fragment shader
               const char* frag = GLSL(410,
                   out vec4 outputF;
 
@@ -57,31 +57,6 @@ namespace nb {
               if(!mRenderShader.CompileFromString(vert, frag)) {
                   std::cerr << "Unable to compile the shader code" << std::endl;
               }
-
-
-              //create a triangle
-              mTriangleMeshBuffer.Clear();
-              GLMeshBuffer::GLVertexArrayPtrType vbo = mTriangleMeshBuffer.AddVertexAttribArray();
-
-              vector<GLVertexArray::GLVertexBufferLayout> vLayouts;
-              {
-                  GLVertexArray::GLVertexAttribute attr(GLVertexArray::kPosition, 3);
-                  GLVertexArray::GLVertexBufferLayout layout;
-                  layout.buffer.resize(0);
-                  float vertices[9] = {-1.0f, -1.0f, 0.0f, 1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f};
-                  unsigned vsize = sizeof(vertices) / sizeof(float);
-                  std::copy(&vertices[0], & vertices[vsize], std::back_inserter(layout.buffer));
-
-                  layout.layoutType = GLVertexArray::altSeparate;
-                  layout.attributes.push_back(attr);
-                  vLayouts.push_back(layout);
-              }
-              bool result = vbo->Import(3, vLayouts.data(), vLayouts.size());
-
-              GLMeshBuffer::GLFaceArrayPtrType fbo = mTriangleMeshBuffer.AddFaceArray();
-              U32 raw_indices [3] = {0, 1, 2};
-              vector<U32> indices(raw_indices, raw_indices + 3);
-              result &= fbo->Import(indices, ftTriangles);
         }
 
         virtual ~CatmullRomCurveRenderImpl() {
@@ -119,15 +94,14 @@ namespace nb {
                     indices.push_back(i);
                 }
                 GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCtrlPointsMeshBuffer.AddFaceArray();
-                mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, ftLineStrip);
+                mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, ftPoints);
             }
         }
 
-
         void DrawCtrlPoints(const nb::linalg::mat4 &modelview,
                             const nb::linalg::mat4 &projection) {
-//            if(!mCtrlPointMeshBufferIsValid)
-//                return;
+            if(!mCtrlPointMeshBufferIsValid)
+                return;
 
             if(!mRenderShader.IsReadyToRun())
                 return;
@@ -149,8 +123,6 @@ namespace nb {
             //
             mCtrlPointsMeshBuffer.Bind();
             mCtrlPointsMeshBuffer.Unbind();
-            mTriangleMeshBuffer.Bind();
-            mTriangleMeshBuffer.Unbind();
 
             mRenderShader.Unbind();
         }
@@ -163,7 +135,6 @@ namespace nb {
         GLShader mRenderShader;
         GLMeshBuffer mCtrlPointsMeshBuffer;
         GLMeshBuffer mCurveProfileMeshBuffer;
-        GLMeshBuffer mTriangleMeshBuffer;
         bool mCtrlPointMeshBufferIsValid;
     };
 
@@ -185,7 +156,7 @@ namespace nb {
 
     void CatmullRomCurveRender::Render(const nb::linalg::mat4 &modelview,
                                        const nb::linalg::mat4 &projection)
-    {           
+    {
         if(mDrawCtrlPoints) {
             mImpl->DrawCtrlPoints(modelview, projection);
         }

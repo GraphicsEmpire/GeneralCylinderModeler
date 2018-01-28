@@ -13,6 +13,7 @@
 
 #include <memory>
 #include "linalg/matrix.h"
+#include "render/sgrenderinterface.h"
 
 using namespace std;
 
@@ -22,13 +23,13 @@ namespace nb {
 class CatmullRomCurve;
 class CatmullRomCurveRenderImpl;
 
-class CatmullRomCurveRender {
+class CatmullRomCurveRender : public SGRenderInterface {
 public:
     CatmullRomCurveRender(const std::shared_ptr<CatmullRomCurve>& cdata);
     virtual ~CatmullRomCurveRender();
 
     void Render(const nb::linalg::mat4 &modelview,
-                const nb::linalg::mat4 &projection);
+                const nb::linalg::mat4 &projection) override;
 
     void Sync();
 

@@ -30,7 +30,7 @@ namespace nb {
 
         GLTexture::GLTexture(U32 texture_unit): mTextureMode((U32) GL_TEXTURE_2D),
                                                 mTextureUnit(texture_unit),
-                                                mGLTextureHandle((U32) INVALID_GLBUFFER)
+                                                mGLTextureHandle((U32) kInvalidGLBuffer)
         {
             Setup();
 
@@ -43,7 +43,7 @@ namespace nb {
                              U32 height,
                              U32 texture_unit):mTextureMode((U32) GL_TEXTURE_2D),
                                                mTextureUnit(texture_unit),
-                                               mGLTextureHandle((U32) INVALID_GLBUFFER)
+                                               mGLTextureHandle((U32) kInvalidGLBuffer)
         {
             //setup
             Setup();
@@ -57,7 +57,7 @@ namespace nb {
 
         GLTexture::GLTexture(const string &strFP, U32 texture_unit):mTextureMode((U32) GL_TEXTURE_2D),
                                                                     mTextureUnit(texture_unit),
-                                                                    mGLTextureHandle((U32) INVALID_GLBUFFER) {
+                                                                    mGLTextureHandle((U32) kInvalidGLBuffer) {
             //setup
             Setup();
 
@@ -77,7 +77,7 @@ namespace nb {
         void GLTexture::Cleanup() {
             if (glIsTexture(mGLTextureHandle)) {
                 glDeleteTextures(1, &mGLTextureHandle);
-                mGLTextureHandle = INVALID_GLBUFFER;
+                mGLTextureHandle = kInvalidGLBuffer;
             }
         }
 
@@ -416,7 +416,7 @@ namespace nb {
         }
 
         bool GLTexture::IsValidTextureHandle(U32 handle) {
-            return (handle != (U32) INVALID_GLBUFFER && glIsTexture(handle));
+            return (handle != (U32) kInvalidGLBuffer && glIsTexture(handle));
         }
 
         ImageDefinition GLTexture::GetImageDefinition() const {

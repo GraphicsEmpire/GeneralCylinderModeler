@@ -14,6 +14,7 @@
 #include <vector>
 #include "utils/bindableinterface.h"
 #include "linalg/base.h"
+#include "gltypes.h"
 
 using namespace std;
 
@@ -28,38 +29,33 @@ public:
     GLVertexArray();
     virtual ~GLVertexArray();
 
-    enum VertexAttributeIndex : U32 { kPosition = 0x0, kNormal = 0x1, kTexture = 0x2, kColor = 0x3, kWeight = 0x4 };
-    enum AttributeLayoutType { altSeparate, altSequentialBatch, altInterleave };
+
 
 
     //Attribute layout
     class GLVertexAttribute {
     public:
         GLVertexAttribute():mIndex(kPosition), mCount(0) {}
-        GLVertexAttribute(VertexAttributeIndex index,
+        GLVertexAttribute(GLVertexAttributeIndex index,
                           U32 count):mIndex(index), mCount(count) {}
-    public:
-        VertexAttributeIndex mIndex;
+
+        U32 GetCount() const { return mCount; }
+        GLVertexAttributeIndex  GetVertexAttributeIndex() const { return mIndex; }
+    protected:
+        GLVertexAttributeIndex mIndex;
         U32 mCount;
     };
 
-
-    //Complete buffer layout
-    struct GLVertexBufferLayout {
-        AttributeLayoutType layoutType;
-        vector<GLVertexAttribute> attributes;
-        vector<float> buffer;
-    };
-
     /*!
-     * Reads in a vertex data buffer to the gpu memory
-     * @param count_vertices number of vertices to read in
-     * @param layouts an array representing the buffer layout
-     * @param count_layouts number of buffer layouts supplied
-     * @return true when vertex data is imported successfully
+     *
+     * @param attribs array of vertex attributes
+     * @param vdata the vertex data to be imported into video memory
+     * @param layout the type of layout
+     * @return true when vertices are loaded successfully
      */
-    bool Import(U32 count_vertices, const GLVertexBufferLayout *layouts, U32 count_layouts);
-
+    bool Import(const vector<GLVertexAttribute>& attribs,
+                const vector<float>& vdata,
+                GLVertexAttributeLayoutType layout = kSeparate);
 
     void Bind() override;
     void Unbind() override;

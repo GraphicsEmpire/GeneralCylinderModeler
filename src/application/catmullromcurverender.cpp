@@ -75,17 +75,10 @@ namespace nb {
             GLMeshBuffer::GLVertexArrayPtrType vboCtrlPoints = mCtrlPointsMeshBuffer.AddVertexAttribArray();
 
             //positions
-            vector<GLVertexArray::GLVertexBufferLayout> vboCtrlPointsLayout;
-            if(cdata.CountCtrlPoints() > 0) {
-
-                GLVertexArray::GLVertexAttribute attr(GLVertexArray::kPosition, 3);
-                GLVertexArray::GLVertexBufferLayout layout;
-                layout.buffer = cdata.GetCtrlPoints();
-                layout.layoutType = GLVertexArray::altSeparate;
-                layout.attributes.push_back(attr);
-                vboCtrlPointsLayout.push_back(layout);
-            }
-            mCtrlPointMeshBufferIsValid = vboCtrlPoints->Import(cdata.CountCtrlPoints(), vboCtrlPointsLayout.data(), vboCtrlPointsLayout.size());
+            std::vector<GLVertexArray::GLVertexAttribute> attr = {
+                    GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3)
+            };
+            mCtrlPointMeshBufferIsValid = vboCtrlPoints->Import(attr, cdata.GetCtrlPoints());
 
             //index buffer for points
             {
@@ -94,7 +87,7 @@ namespace nb {
                     indices.push_back(i);
                 }
                 GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCtrlPointsMeshBuffer.AddFaceArray();
-                mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, ftPoints);
+                mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, kLineStrip);
             }
         }
 

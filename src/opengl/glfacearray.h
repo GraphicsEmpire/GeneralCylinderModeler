@@ -29,7 +29,7 @@ public:
     virtual ~GLFaceArray();
 
 
-    bool Import(const vector<U32> &indices, GLFaceType ftype = ftTriangles);
+    bool Import(const vector<U32> &indices, GLFaceType ftype = kTriangles);
 
     void Bind() override;
     void Unbind() override;

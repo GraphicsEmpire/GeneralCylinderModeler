@@ -3,55 +3,43 @@
 
 namespace nb {
 namespace opengl {
-/*
-#define GL_LINES 0x0001
-#define GL_LINE_LOOP 0x0002
-#define GL_POINT_BIT 0x00000002
-#define GL_CLIENT_VERTEX_ARRAY_BIT 0x00000002
-#define GL_LINE_STRIP 0x0003
-#define GL_LINE_BIT 0x00000004
-#define GL_TRIANGLES 0x0004
-#define GL_TRIANGLE_STRIP 0x0005
-#define GL_TRIANGLE_FAN 0x0006
-#define GL_QUADS 0x0007
-#define GL_QUAD_STRIP 0x0008
-#define GL_POLYGON_BIT 0x00000008
-#define GL_POLYGON 0x0009
-*/
 
-
-#define INVALID_GLBUFFER ~0
-
-
-//Memory Buffer Type
-enum GLBufferType {gbtPosition, gbtNormal, gbtColor, gbtTexCoord, gbtFaceIndex, gbtCount};
+//invalid opengl buffer
+static const U32 kInvalidGLBuffer = ~0;
 
 //Usage hint for buffer access
-enum GLBufferUsage {gbuStreamDraw = 0x88E0,
-					gbuStreamRead = 0x88E1,
-					gbuStreamCopy = 0x88E2,
-					gbuStaticDraw = 0x88E4,
-					gbuStaticRead = 0x88E5,
+enum GLBufferUsage {kStreamDraw = 0x88E0,
+					kStreamRead = 0x88E1,
+					kStreamCopy = 0x88E2,
+					kStaticDraw = 0x88E4,
+					kStaticRead = 0x88E5,
 					gbuStaticCopy = 0x88E6,
 					gbuDynamicDraw = 0x88E8,
 					gbuDynamicRead = 0x88E9,
 					gbuDynamicCopy = 0x88EA,
 };
 
-//Face Types
-enum GLFaceType {ftPoints = 0x0000,
-			   ftLines = 0x0001,
-			   ftLineLoop = 0x0002,
-			   ftLineStrip = 0x0003,
-			   ftTriangles = 0x0004,
-			   ftTriangleStrip = 0x0005,
-			   ftTriangleFan = 0x0006,
-			   ftQuads = 0x0007,
-			   ftQuadStrip = 0x0008,
-			   ftPolygon = 0x0009};
+//Vertex Attribute Types
+enum GLVertexAttributeIndex : U32 { kPosition = 0x0,
+									kNormal = 0x1,
+									kTexture = 0x2,
+									kColor = 0x3,
+									kWeight = 0x4 };
 
-//Shader Effect Type
-enum ShaderEffectType {setFixedFunction, setCustom};
+//Vertex Attributes Layout Type
+enum GLVertexAttributeLayoutType { kSeparate, kSequentialBatch, kInterleave };
+
+	//Face Types
+enum GLFaceType : U32 {kPoints = 0x0000,
+					   kLines = 0x0001,
+					   kLineLoop = 0x0002,
+					   kLineStrip = 0x0003,
+					   kTriangles = 0x0004,
+					   kTriangleStrip = 0x0005,
+					   kTriangleFan = 0x0006,
+					   kQuads = 0x0007,
+					   kQuadStrip = 0x0008,
+					   kPolygon = 0x0009};
 
 }
 }

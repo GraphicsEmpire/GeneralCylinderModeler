@@ -27,30 +27,30 @@ GLVertexArray::~GLVertexArray() {
     clear();
 }
 
-bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::GLVertexBufferLayout *layouts, U32 count_layouts)
+bool GLVertexArray::Import(const vector<GLVertexAttribute>& attribs,
+                            const vector<float>& vdata,
+                            GLVertexAttributeLayoutType layout)
 {
-    if(count_layouts == 0 || layouts == NULL) {
-        nbLogError("Invalid layout input");
+    if(attribs.size() == 0 || vdata.size() == 0) {
+        nbLogError("Invalid vertex input");
         return false;
     }
 
     //check layout
-    for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = layouts[i].attributes.size();
-        U32 vertex_packet_size = 0;
-
-        //sum up the dimension of all attributes in this layout
-        for(U32 j=0; j < attribs_count; j++) {
-            GLVertexAttribute attr = layouts[i].attributes[j];
-            vertex_packet_size += attr.mCount;
-        }
-
-        U32 rem = layouts[i].buffer.size() % vertex_packet_size;
-        if(rem != 0) {
-            nbLogError("Layout [%u] does not cover the entire data buffer. rem = %u", i, rem);
-            return false;
-        }
+    U32 vertex_packet_size = 0;
+    //sum up the dimension of all attributes in this layout
+    for(U32 i=0; i < attribs.size(); i++) {
+        vertex_packet_size += attribs[i].GetCount();
     }
+
+    U32 rem = vdata.size() % vertex_packet_size;
+    if(rem != 0) {
+        nbLogError("VertexBuffer layout does not cover the entire data buffer. rem = %u", rem);
+        return false;
+    }
+
+    //count the number of vertices supplied
+    U32 count_vertices = vdata.size() / vertex_packet_size;
 
     //clear
     clear();
@@ -61,52 +61,44 @@ bool GLVertexArray::Import(U32 count_vertices, const GLVertexArray::GLVertexBuff
     //1. bind the vao
     glBindVertexArray(mVertexArrayObject);
 
-    //per each layout
-    for(U32 i=0; i < count_layouts; i++) {
-        U32 attribs_count = layouts[i].attributes.size();
-        AttributeLayoutType layoutType = layouts[i].layoutType;
 
-        //compute vertex packet size
-        U32 vertex_packet_size = 0;
-        for(U32 j=0; j < attribs_count; j++) {
-            GLVertexAttribute attr = layouts[i].attributes[j];
-            vertex_packet_size += attr.mCount;
+    //create the only vertex buffer object
+    U32 vbo = 0;
+    glGenBuffers(1, &vbo);
+    mVertexBufferObjects.push_back(vbo);
+
+    //2. copy data
+    glBindBuffer(GL_ARRAY_BUFFER, vbo);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vdata.size(),
+                 vdata.data(), GL_STATIC_DRAW);
+
+    //loop over attribs count
+    U64 prev_batch_bytes_offset = 0;
+    for(U32 i=0; i < attribs.size(); i++) {
+        U64 byte_offset = 0;
+        if(layout == kInterleave) {
+            byte_offset = attribs[i].GetCount() * sizeof(float);
+        }
+        else if(layout == kSequentialBatch) {
+            byte_offset = prev_batch_bytes_offset;
         }
 
-        //create the only vertex buffer object
-        U32 vbo = 0;
-        glGenBuffers(1, &vbo);
-        mVertexBufferObjects.push_back(vbo);
+        //3. set vertex attrib array
+        glEnableVertexAttribArray(attribs[i].GetVertexAttributeIndex());
+        glVertexAttribPointer(attribs[i].GetVertexAttributeIndex(),
+                              attribs[i].GetCount(),
+                              GL_FLOAT,
+                              GL_FALSE,
+                              vertex_packet_size * sizeof(float),
+                              (GLvoid*)(byte_offset));
 
-        //2. copy data
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, sizeof(float) * layouts[i].buffer.size(),
-                     layouts[i].buffer.data(), GL_STATIC_DRAW);
+        //accumulate offset
+        prev_batch_bytes_offset += count_vertices * attribs[i].GetCount() * sizeof(float);
+    } //attribs
 
-        //loop over attribs count
-        U64 prev_batch_bytes_offset = 0;
-        for(U32 j=0; j < attribs_count; j++) {
+    //4. unbind buffer
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
 
-            GLVertexAttribute attribute = layouts[i].attributes[j];
-            U64 byte_offset = 0;
-            if(layoutType == altInterleave) {
-                byte_offset = attribute.mCount * sizeof(float);
-            }
-            else if(layoutType == altSequentialBatch) {
-                byte_offset = prev_batch_bytes_offset;
-            }
-
-            //3. set vertex attrib array
-            glEnableVertexAttribArray(attribute.mIndex);
-            glVertexAttribPointer(attribute.mIndex, attribute.mCount, GL_FLOAT, GL_FALSE, vertex_packet_size * sizeof(float), (GLvoid*)(byte_offset));
-
-            //accumulate offset
-            prev_batch_bytes_offset += count_vertices * attribute.mCount * sizeof(float);
-        } //attribs
-
-        //4. unbind buffer
-        glBindBuffer(GL_ARRAY_BUFFER, 0);
-    }
 
     //5. unbind the vao
     glBindVertexArray(0);

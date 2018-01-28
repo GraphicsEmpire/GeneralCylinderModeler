@@ -24,8 +24,6 @@ namespace nb {
             GLShader();
             GLShader(const char* pszVertexShader, const char* pszFragmentShader, const char* pszGeometryShader = NULL);
             virtual ~GLShader();
-            
-            enum ShaderType {stVertex = 0, stFragment = 1, stGeometry = 2};
                         
             //After analysis is done we fetch the locations of uniforms
             int  GetUniformLocation(const char *chrUniformName);

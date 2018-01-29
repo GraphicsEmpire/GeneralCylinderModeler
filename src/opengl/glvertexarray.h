@@ -29,10 +29,9 @@ public:
     GLVertexArray();
     virtual ~GLVertexArray();
 
-
-
-
-    //Attribute layout
+    /*!
+     * Defines a vertex buffer attribute
+     */
     class GLVertexAttribute {
     public:
         GLVertexAttribute():mIndex(kPosition), mCount(0) {}

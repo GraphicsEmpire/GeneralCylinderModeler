@@ -34,13 +34,13 @@ namespace nb {
               //create the vertex shader
               const char* vert = GLSL(410,
                   layout(location = 0) in vec3 in_vertex;
-                  uniform mat4 viewMatrix;
-                  uniform mat4 projMatrix;
+                  uniform mat4 ViewMatrix;
+                  uniform mat4 ProjMatrix;
 
                   void main()
                   {
                       vec4 position = vec4(in_vertex, 1.0);
-                      gl_Position = projMatrix * viewMatrix * position;
+                      gl_Position = ProjMatrix * ViewMatrix * position;
                   }
               );
 
@@ -54,7 +54,7 @@ namespace nb {
                   }
               );
 
-              if(!mRenderShader.CompileFromString(vert, frag)) {
+              if(!mCtrlPointsShader.CompileFromString(vert, frag)) {
                   std::cerr << "Unable to compile the shader code" << std::endl;
               }
         }
@@ -96,20 +96,20 @@ namespace nb {
             if(!mCtrlPointMeshBufferIsValid)
                 return;
 
-            if(!mRenderShader.IsReadyToRun())
+            if(!mCtrlPointsShader.IsReadyToRun())
                 return;
 
             glPointSize(5.0);
 
             //run the shader
-            mRenderShader.Bind();
+            mCtrlPointsShader.Bind();
 
             //Set all uniform variables
             {
-                int locModelViewMatrix = mRenderShader.GetUniformLocation("viewMatrix");
+                int locModelViewMatrix = mCtrlPointsShader.GetUniformLocation("ViewMatrix");
                 glUniformMatrix4fv(locModelViewMatrix, 1, false, modelview.GetConstData());
 
-                int locProjMatrix = mRenderShader.GetUniformLocation("projMatrix");
+                int locProjMatrix = mCtrlPointsShader.GetUniformLocation("ProjMatrix");
                 glUniformMatrix4fv(locProjMatrix, 1, false, projection.GetConstData());
             }
 
@@ -117,7 +117,7 @@ namespace nb {
             mCtrlPointsMeshBuffer.Bind();
             mCtrlPointsMeshBuffer.Unbind();
 
-            mRenderShader.Unbind();
+            mCtrlPointsShader.Unbind();
         }
 
         void DrawCurveProfile() {
@@ -125,7 +125,7 @@ namespace nb {
             mCurveProfileMeshBuffer.Unbind();
         }
     protected:
-        GLShader mRenderShader;
+        GLShader mCtrlPointsShader;
         GLMeshBuffer mCtrlPointsMeshBuffer;
         GLMeshBuffer mCurveProfileMeshBuffer;
         bool mCtrlPointMeshBufferIsValid;

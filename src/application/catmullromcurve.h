@@ -13,6 +13,7 @@
 
 #include <vector>
 #include <functional>
+#include <array>
 #include "linalg/vec.h"
 
 using namespace std;
@@ -30,6 +31,9 @@ namespace nb {
     public:
         CatmullRomCurve();
         CatmullRomCurve(const CatmullRomCurve& rhs);
+        virtual ~CatmullRomCurve();
+
+        void CopyFrom(const CatmullRomCurve& rhs);
 
         void Clear();
         void AddCtrlPoint(const nb::linalg::Vec3<float>& p);
@@ -43,6 +47,13 @@ namespace nb {
         const std::vector<float> GetCtrlPoints() const;
 
         void RegisterOnCurveDataChangedCallBack(OnCurveDataChanged cb);
+
+    protected:
+        void Cleanup();
+
+        bool ExtractLocalSpline(float globalT, float& splineT, std::array<Vec3<float>, 4>& cp);
+        static Vec3<float> ComputeSplinePosition(float ts, const std::array<Vec3<float>, 4>& cp);
+
     protected:
         std::vector<float> mRegularPoints;
         std::vector<float> mCtrlPoints;

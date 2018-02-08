@@ -33,6 +33,10 @@ namespace nb {
         CatmullRomCurve(const CatmullRomCurve& rhs);
         virtual ~CatmullRomCurve();
 
+        /*!
+         * Copies the curve data from another instance
+         * @param rhs
+         */
         void CopyFrom(const CatmullRomCurve& rhs);
 
         void Clear();
@@ -51,7 +55,23 @@ namespace nb {
     protected:
         void Cleanup();
 
+        /*!
+         * Computes which local spline should be processed using the global curve parameter t.
+         * Outputs the local spline parameter and the associated list of control points
+         * @param globalT the global curve parameter
+         * @param splineT the local spline parameter
+         * @param cp the associated list of control points
+         * @return true when the correct spline is selected
+         */
         bool ExtractLocalSpline(float globalT, float& splineT, std::array<Vec3<float>, 4>& cp);
+
+        /*!
+         * Computes a point on the spline at normalized parameter t using the 4 control
+         * points supplied.
+         * @param ts local spline normalized parameter
+         * @param cp input control points
+         * @return a 3D point on the spline curve
+         */
         static Vec3<float> ComputeSplinePosition(float ts, const std::array<Vec3<float>, 4>& cp);
 
     protected:

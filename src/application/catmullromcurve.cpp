@@ -23,7 +23,7 @@ namespace nb {
         }
 
         CatmullRomCurve::~CatmullRomCurve() {
-
+            Clear();
         }
 
 
@@ -88,6 +88,7 @@ namespace nb {
 
         bool CatmullRomCurve::ExtractLocalSpline(float globalT, float &splineT, std::array<Vec3<float>, 4> &cp) {
             U32 nslices = CountCtrlPoints() - 3;
+            splineT =
         }
 
 

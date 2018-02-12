@@ -25,7 +25,18 @@ namespace nb {
     typedef std::function<void(void)> OnCurveDataChanged;
 
     /*!
-     * Represents the data storage for a Catmull-Rom curve
+     * Represents the data storage for a Catmull-Rom curve.
+     * The curve is built according to the following algorithm:
+     *
+     * 1. The curve is split into multiple splines. Number of splines is equal to
+     *   the number of control point minus 3, so we need as least 4 control points to compute
+     *   the first spline.
+     *
+     * 2. Starting from the first point, the position, tangent and acceleration are computed
+     *   per each regular point.
+     *
+     * 3. The step size on the curve parameter is advanced according to the following equation:
+     *   dt = distance(stop, start) / ns
      */
     class CatmullRomCurve {
     public:
@@ -41,42 +52,63 @@ namespace nb {
 
         void Clear();
         void AddCtrlPoint(const nb::linalg::Vec3<float>& p);
+
+
+        U32 CountCurveProfilePoints() const;
         U32 CountCtrlPoints() const;
-        void ComputeCurvePoints();
+        U32 CountSplines() const;
 
         Vec3<float> GetPosition(float t);
         Vec3<float> GetTangent(float t);
         Vec3<float> GetAcceleration(float t);
 
         const std::vector<float> GetCtrlPoints() const;
+        const std::vector<float> GetCurveProfilePoints() const;
 
         void RegisterOnCurveDataChangedCallBack(OnCurveDataChanged cb);
 
     protected:
         void Cleanup();
 
+        void ComputeCurvePoints();
+
+        bool ComputeNormalizedDistancesBetweenKnots();
+
         /*!
          * Computes which local spline should be processed using the global curve parameter t.
          * Outputs the local spline parameter and the associated list of control points
          * @param globalT the global curve parameter
          * @param splineT the local spline parameter
-         * @param cp the associated list of control points
+         * @param splineCtrlPoints the associated list of control points
          * @return true when the correct spline is selected
          */
-        bool ExtractLocalSpline(float globalT, float& splineT, std::array<Vec3<float>, 4>& cp);
+        bool ExtractLocalSpline(float globalT,
+                                float& splineT,
+                                std::array<Vec3<float>, 4>& splineCtrlPoints);
 
         /*!
          * Computes a point on the spline at normalized parameter t using the 4 control
          * points supplied.
-         * @param ts local spline normalized parameter
-         * @param cp input control points
+         * @param splineT local spline normalized parameter
+         * @param splineCtrlPoints input control points
          * @return a 3D point on the spline curve
          */
-        static Vec3<float> ComputeSplinePosition(float ts, const std::array<Vec3<float>, 4>& cp);
+        static Vec3<float> ComputeSplinePosition(float splineT,
+                                                 const std::array<Vec3<float>, 4>& splineCtrlPoints);
+
+
+        static Vec3<float> ComputeSplineTangent(float splineT,
+                                                 const std::array<Vec3<float>, 4>& splineCtrlPoints);
+
+        static Vec3<float> ComputeSplineAcceleration(float splineT,
+                                                     const std::array<Vec3<float>, 4>& splineCtrlPoints);
 
     protected:
-        std::vector<float> mRegularPoints;
+        std::vector<float> mAccumulatedArcLength;
+        std::vector<float> mKnotsLengthNormalized;
+
         std::vector<float> mCtrlPoints;
+        std::vector<float> mCurveProfilePoints;
         OnCurveDataChanged mFOnCurveDataChanged;
     };
 

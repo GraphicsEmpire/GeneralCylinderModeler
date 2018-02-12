@@ -29,34 +29,48 @@ namespace nb {
     */
     class CatmullRomCurveRenderImpl {
     public:
-        CatmullRomCurveRenderImpl():mCtrlPointMeshBufferIsValid(false) {
+        CatmullRomCurveRenderImpl() : mCtrlPointMeshBufferIsValid(false) {
             //=======================================================
-              //create the vertex shader
-              const char* vert = GLSL(410,
-                  layout(location = 0) in vec3 in_vertex;
-                  uniform mat4 ViewMatrix;
-                  uniform mat4 ProjMatrix;
+            //create the vertex shader
+            const char *vert = GLSL(410,
+                                    layout(location = 0)
+                                            in
+                                            vec3 in_vertex;
+                                            uniform
+                                            mat4 ViewMatrix;
+                                            uniform
+                                            mat4 ProjMatrix;
 
-                  void main()
-                  {
-                      vec4 position = vec4(in_vertex, 1.0);
-                      gl_Position = ProjMatrix * ViewMatrix * position;
-                  }
-              );
+                                            void main() {
+                                                vec4 position = vec4(in_vertex, 1.0);
+                                                gl_Position = ProjMatrix * ViewMatrix * position;
+                                            }
+            );
 
-              //create the fragment shader
-              const char* frag = GLSL(410,
-                  out vec4 outputF;
+            //create the fragment shader for ctrl points
+            const char *frag_ctrlpoints = GLSL(410,
+                out vec4 outputF;
+                void main() {
+                   outputF = vec4(1, 0, 0, 1);
+                }
+            );
 
-                  void main()
-                  {
-                      outputF = vec4(1,0,0,1);
-                  }
-              );
+            //create the fragment shader for curve profile
+            const char *frag_curveprofile = GLSL(410,
+                out vec4 outputF;
+                void main() {
+                    outputF = vec4(0, 0, 1, 1);
+                }
+            );
 
-              if(!mCtrlPointsShader.CompileFromString(vert, frag)) {
-                  std::cerr << "Unable to compile the shader code" << std::endl;
-              }
+            if (!mCtrlPointsShader.CompileFromString(vert, frag_ctrlpoints)) {
+                std::cerr << "Unable to compile the shader code" << std::endl;
+            }
+
+            if (!mCurveProfileShader.CompileFromString(vert, frag_curveprofile)) {
+                std::cerr << "Unable to compile the shader code" << std::endl;
+            }
+
         }
 
         virtual ~CatmullRomCurveRenderImpl() {
@@ -72,22 +86,50 @@ namespace nb {
 
             //sync ctrl points
             mCtrlPointsMeshBuffer.Clear();
-            GLMeshBuffer::GLVertexArrayPtrType vboCtrlPoints = mCtrlPointsMeshBuffer.AddVertexAttribArray();
+            mCtrlPointMeshBufferIsValid = false;
 
-            //positions
-            std::vector<GLVertexArray::GLVertexAttribute> attr = {
-                    GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3)
-            };
-            mCtrlPointMeshBufferIsValid = vboCtrlPoints->Import(attr, cdata.GetCtrlPoints());
+            if(cdata.CountCtrlPoints() > 0) {
+                GLMeshBuffer::GLVertexArrayPtrType vboCtrlPoints = mCtrlPointsMeshBuffer.AddVertexAttribArray();
 
-            //index buffer for points
-            {
-                std::vector<U32> indices;
-                for(U32 i=0; i < cdata.CountCtrlPoints(); i++) {
-                    indices.push_back(i);
+                //positions
+                std::vector<GLVertexArray::GLVertexAttribute> attr = {
+                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3)
+                };
+                mCtrlPointMeshBufferIsValid = vboCtrlPoints->Import(attr, cdata.GetCtrlPoints());
+
+                //index buffer for points
+                {
+                    std::vector<U32> indices(cdata.CountCtrlPoints());
+                    for (U32 i = 0; i < cdata.CountCtrlPoints(); i++) {
+                        indices[i] = i;
+                    }
+                    GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCtrlPointsMeshBuffer.AddFaceArray();
+                    mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, kPoints);
                 }
-                GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCtrlPointsMeshBuffer.AddFaceArray();
-                mCtrlPointMeshBufferIsValid &= glFaceBuffer->Import(indices, kLineStrip);
+            }
+
+            //sync curve profile
+            mCurveProfileMeshBuffer.Clear();
+            mCurveProfileMeshBufferIsValid = false;
+
+            if(cdata.CountSplines() > 0) {
+                GLMeshBuffer::GLVertexArrayPtrType vboCurveProfile = mCurveProfileMeshBuffer.AddVertexAttribArray();
+
+                //positions
+                std::vector<GLVertexArray::GLVertexAttribute> attr = {
+                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3)
+                };
+                mCurveProfileMeshBufferIsValid = vboCurveProfile->Import(attr, cdata.GetCurveProfilePoints());
+
+                //index buffer for points
+                {
+                    std::vector<U32> indices(cdata.CountCurveProfilePoints());
+                    for (U32 i = 0; i < cdata.CountCurveProfilePoints(); i++) {
+                        indices[i] = i;
+                    }
+                    GLMeshBuffer::GLFaceArrayPtrType glFaceBuffer = mCurveProfileMeshBuffer.AddFaceArray();
+                    mCurveProfileMeshBufferIsValid &= glFaceBuffer->Import(indices, kLineStrip);
+                }
             }
         }
 
@@ -120,20 +162,45 @@ namespace nb {
             mCtrlPointsShader.Unbind();
         }
 
-        void DrawCurveProfile() {
+        void DrawCurveProfile(const nb::linalg::mat4 &modelview,
+                              const nb::linalg::mat4 &projection) {
+            if(!mCurveProfileMeshBufferIsValid)
+                return;
+
+            if(!mCurveProfileShader.IsReadyToRun())
+                return;
+
+            //run the shader
+            mCurveProfileShader.Bind();
+
+            //Set all uniform variables
+            {
+                int locModelViewMatrix = mCtrlPointsShader.GetUniformLocation("ViewMatrix");
+                glUniformMatrix4fv(locModelViewMatrix, 1, false, modelview.GetConstData());
+
+                int locProjMatrix = mCtrlPointsShader.GetUniformLocation("ProjMatrix");
+                glUniformMatrix4fv(locProjMatrix, 1, false, projection.GetConstData());
+            }
+
+            //draw curve profile
             mCurveProfileMeshBuffer.Bind();
             mCurveProfileMeshBuffer.Unbind();
+
+            mCurveProfileShader.Unbind();
+
         }
     protected:
         GLShader mCtrlPointsShader;
+        GLShader mCurveProfileShader;
         GLMeshBuffer mCtrlPointsMeshBuffer;
         GLMeshBuffer mCurveProfileMeshBuffer;
         bool mCtrlPointMeshBufferIsValid;
+        bool mCurveProfileMeshBufferIsValid;
     };
 
     /////////////////////////////////////////////////
     CatmullRomCurveRender::CatmullRomCurveRender(const std::shared_ptr<CatmullRomCurve> &cdata):
-        mCurveData(cdata), mDrawCtrlPoints(true), mDrawCurveProfile(false)
+        mCurveData(cdata), mDrawCtrlPoints(true), mDrawCurveProfile(true)
     {
         mImpl.reset(new CatmullRomCurveRenderImpl());
 
@@ -155,7 +222,7 @@ namespace nb {
         }
 
         if(mDrawCurveProfile) {
-            mImpl->DrawCurveProfile();
+            mImpl->DrawCurveProfile(modelview, projection);
         }
     }
 

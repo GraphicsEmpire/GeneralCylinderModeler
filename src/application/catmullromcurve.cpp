@@ -154,6 +154,7 @@ namespace nb {
             mCtrlPoints.resize(0);
             mCurveProfilePoints.resize(0);
             mKnotsLengthNormalized.resize(0);
+            mAccumulatedArcLength.resize(0);
         }
 
         const vector<float> CatmullRomCurve::GetCtrlPoints() const {
@@ -249,12 +250,43 @@ namespace nb {
 
         Vec3<float>
         CatmullRomCurve::ComputeSplineTangent(float splineT, const std::array<Vec3<float>, 4> &splineCtrlPoints) {
-            return nb::linalg::Vec3<float>();
+            //p(u) = U`^T * M * B
+            //U`^T = [3u^2 2*u 1 0]
+            //M Matrix =0.5 * [-1 3 -3  1]
+            //                [2 -5  4 -1]
+            //				  [-1 0  1  0]
+            //                [0  2  0  0]
+            //B = [Pi-1 pi pi+1 pi+2]
+            float ts2 = splineT * splineT;
+
+            float b0 = float(0.5 * (-3*ts2 + 4*splineT - 1));
+            float b1 = float(0.5 * (9*ts2 -10*splineT));
+            float b2 = float(0.5 * (-9*ts2 + 8*splineT + 1));
+            float b3 = float(0.5 * (3*ts2 - 2*splineT));
+
+            Vec3<float> tangent = Vec3<float>::Mul(b0, splineCtrlPoints[0]) + Vec3<float>::Mul(b1, splineCtrlPoints[1]) +
+                            Vec3<float>::Mul(b2, splineCtrlPoints[2]) + Vec3<float>::Mul(b3, splineCtrlPoints[3]);
+            return tangent;
         }
 
         Vec3<float>
         CatmullRomCurve::ComputeSplineAcceleration(float splineT, const std::array<Vec3<float>, 4> &splineCtrlPoints) {
-            return nb::linalg::Vec3<float>();
+            //p(u) = U``^T * M * B
+            //U``^T = [6u 2 0 0]
+            //M Matrix =0.5 * [-1 3 -3  1]
+            //                [2 -5  4 -1]
+            //				  [-1 0  1  0]
+            //                [0  2  0  0]
+            //B = [Pi-1 pi pi+1 pi+2]
+
+            float b0 = float(0.5 * (-6*splineT + 4));
+            float b1 = float(0.5 * (18*splineT - 10));
+            float b2 = float(0.5 * (-18*splineT + 8));
+            float b3 = float(0.5 * (6*splineT - 2));
+
+            Vec3<float> acc = Vec3<float>::Mul(b0, splineCtrlPoints[0]) + Vec3<float>::Mul(b1, splineCtrlPoints[1]) +
+                                  Vec3<float>::Mul(b2, splineCtrlPoints[2]) + Vec3<float>::Mul(b3, splineCtrlPoints[3]);
+            return acc;
         }
 
 

@@ -50,10 +50,22 @@ namespace nb {
          */
         void CopyFrom(const CatmullRomCurve& rhs);
 
+        /*!
+         * Clears all curve points and computed data for the curve along with the
+         * control points
+         */
         void Clear();
+
+        /*!
+         * Adds a new control point to the curve
+         * @param p a 3D point
+         */
         void AddCtrlPoint(const nb::linalg::Vec3<float>& p);
 
-
+        /*!
+         * Return the count of curve profile points
+         * @return number of points on the curve
+         */
         U32 CountCurveProfilePoints() const;
         U32 CountCtrlPoints() const;
         U32 CountSplines() const;
@@ -62,7 +74,16 @@ namespace nb {
         Vec3<float> GetTangent(float t);
         Vec3<float> GetAcceleration(float t);
 
+        /*!
+         * Provides access to the control points of the curve
+         * @return vector of control points
+         */
         const std::vector<float> GetCtrlPoints() const;
+
+        /*!
+         * Provides access to the curve profile points
+         * @return vector of curve points
+         */
         const std::vector<float> GetCurveProfilePoints() const;
 
         void RegisterOnCurveDataChangedCallBack(OnCurveDataChanged cb);

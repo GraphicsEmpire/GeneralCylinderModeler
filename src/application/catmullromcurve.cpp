@@ -103,7 +103,7 @@ namespace nb {
             }
 
             //Fixed step-size over the curve parameter
-            const U32 num_curve_points = 100;
+            const U32 num_curve_points = 1000;
             const float delta = 1.0f / static_cast<float>(num_curve_points);
 
             //removes all previous curve points

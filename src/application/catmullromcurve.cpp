@@ -26,6 +26,7 @@ namespace nb {
         }
 
         CatmullRomCurve::~CatmullRomCurve() {
+            mFOnCurveDataChanged = nullptr;
             Clear();
         }
 
@@ -108,15 +109,32 @@ namespace nb {
 
             //removes all previous curve points
             mCurveProfilePoints.resize((num_curve_points + 1) * 3);
+            mAccumulatedArcLength.resize((num_curve_points + 1));
 
+            Vec3<float> prev;
+            float accumulator = 0.0;
             for(U32 i=0; i <= num_curve_points; i++) {
                 float t = static_cast<float>(i) * delta;
-                Vec3<float> p = GetPosition(t);
+                Vec3<float> current = GetPosition(t);
 
-                mCurveProfilePoints[i * 3 + 0] = p.x;
-                mCurveProfilePoints[i * 3 + 1] = p.y;
-                mCurveProfilePoints[i * 3 + 2] = p.z;
+                mCurveProfilePoints[i * 3 + 0] = current.x;
+                mCurveProfilePoints[i * 3 + 1] = current.y;
+                mCurveProfilePoints[i * 3 + 2] = current.z;
+
+                if(i > 0) {
+                    accumulator += Vec3<float>::Distance(current, prev);
+                }
+
+                mAccumulatedArcLength[i] = accumulator;
+                prev = current;
             }
+
+            //print info
+            nbLogInfo("CtrlPts# %u, Splines# %u, CurvePts# %u, Length# %.2f",
+                      CountCtrlPoints(),
+                      CountSplines(),
+                      CountCurveProfilePoints(),
+                      mAccumulatedArcLength.back());
         }
 
         Vec3<float> CatmullRomCurve::GetPosition(float t) {
@@ -155,6 +173,9 @@ namespace nb {
             mCurveProfilePoints.resize(0);
             mKnotsLengthNormalized.resize(0);
             mAccumulatedArcLength.resize(0);
+
+            if(mFOnCurveDataChanged)
+                mFOnCurveDataChanged();
         }
 
         const vector<float> CatmullRomCurve::GetCtrlPoints() const {

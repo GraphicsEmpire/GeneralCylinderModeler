@@ -1,6 +1,8 @@
 #ifndef GLRENDERENGINE_H
 #define GLRENDERENGINE_H
 
+#include <linalg/color.h>
+
 namespace nb {
     namespace opengl {
 
@@ -9,7 +11,9 @@ namespace nb {
             GLRenderEngine();
             static void Init();
 
-            static void PreRender(int x, int y, int width, int height);
+            static void SetViewPort(int x, int y, int width, int height);
+
+            static void SetClearColor(const nb::linalg::Color& color);
 
         };
     }

@@ -86,13 +86,21 @@ namespace nb {
          */
         const std::vector<float> GetCurveProfilePoints() const;
 
+        const std::vector<float> GetCurveProfileTangents() const;
+
+        const std::vector<float> GetCurveProfileAcceleration() const;
+
         void RegisterOnCurveDataChangedCallBack(OnCurveDataChanged cb);
 
     protected:
         void Cleanup();
 
-        void ComputeCurvePoints();
+        bool ComputePositionTangentAcceleration(float t,
+                                                Vec3<float>& position,
+                                                Vec3<float>& tangent,
+                                                Vec3<float>& acceleration);
 
+        void ComputeCurvePoints();
         bool ComputeNormalizedDistancesBetweenKnots();
 
         /*!
@@ -130,6 +138,8 @@ namespace nb {
 
         std::vector<float> mCtrlPoints;
         std::vector<float> mCurveProfilePoints;
+        std::vector<float> mCurveProfileTangents;
+        std::vector<float> mCurveProfileAcceleration;
         OnCurveDataChanged mFOnCurveDataChanged;
     };
 

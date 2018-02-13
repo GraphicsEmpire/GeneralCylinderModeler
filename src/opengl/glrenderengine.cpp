@@ -17,21 +17,6 @@ namespace nb {
                 std::cout << "Failed to initialize OpenGL context" << std::endl;
                 return;
             }
-            /*
-            glbinding::Binding::initialize(false);
-
-            glbinding::setAfterCallback([](const glbinding::FunctionCall &)
-                                        {
-                                            gl::GLenum error = glGetError();
-                                            if (error != GL_NO_ERROR)
-                                                std::cout << "error: " << error << std::endl;
-                                        });
-
-            std::cout << std::endl
-                    << "OpenGL Version:  " << glbinding::ContextInfo::version() << std::endl
-                    << "OpenGL Vendor:   " << glbinding::ContextInfo::vendor() << std::endl
-                    << "OpenGL Renderer: " << glbinding::ContextInfo::renderer() << std::endl;
-            */
 
             glEnable(GL_MULTISAMPLE);
             glEnable(GL_LINE_SMOOTH);
@@ -44,9 +29,13 @@ namespace nb {
 
         }
 
-        void GLRenderEngine::PreRender(int x, int y, int width, int height) {
+        void GLRenderEngine::SetViewPort(int x, int y, int width, int height) {
             glViewport(x, y, width, height);
-            glClearColor(1.0, 1.0, 1.0, 1.0);
+        }
+
+        void GLRenderEngine::SetClearColor(const nb::linalg::Color &color) {
+            nb::linalg::Vec4<float> rgba = color.ToVec4();
+            glClearColor(rgba.x, rgba.y, rgba.z, rgba.w);
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 

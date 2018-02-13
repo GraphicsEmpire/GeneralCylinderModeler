@@ -11,6 +11,7 @@
 #include "catmullromcurve.h"
 #include <linalg/interval.h>
 #include <utils/logger.h>
+#include <limits>
 
 using namespace nb::utils;
 
@@ -108,26 +109,40 @@ namespace nb {
             const float delta = 1.0f / static_cast<float>(num_curve_points);
 
             //removes all previous curve points
-            mCurveProfilePoints.resize((num_curve_points + 1) * 3);
+            const U32 coordinate_comps_count = (num_curve_points + 1) * 3;
+            mCurveProfilePoints.resize(coordinate_comps_count);
+            mCurveProfileTangents.resize(coordinate_comps_count);
+            mCurveProfileAcceleration.resize(coordinate_comps_count);
             mAccumulatedArcLength.resize((num_curve_points + 1));
 
-            Vec3<float> prev;
+            Vec3<float> P_last;
             float accumulator = 0.0;
+            float cmin = std::numeric_limits<float>::max();
+            float cmax = std::numeric_limits<float>::min();
+
             for(U32 i=0; i <= num_curve_points; i++) {
                 float t = static_cast<float>(i) * delta;
-                Vec3<float> current = GetPosition(t);
+                Vec3<float> P, T, A;
+                ComputePositionTangentAcceleration(t, P, T, A);
 
-                mCurveProfilePoints[i * 3 + 0] = current.x;
-                mCurveProfilePoints[i * 3 + 1] = current.y;
-                mCurveProfilePoints[i * 3 + 2] = current.z;
+                cmin = std::min<float>(cmin, A.Length());
+                cmax = std::max<float>(cmax, A.Length());
+
+                for (int j = 0; j < 3; j++) {
+                    mCurveProfilePoints[i * 3 + j] = P[j];
+                    mCurveProfileTangents[i * 3 + j] = T[j];
+                    mCurveProfileAcceleration[i * 3 + j] = A[j];
+                }
 
                 if(i > 0) {
-                    accumulator += Vec3<float>::Distance(current, prev);
+                    accumulator += Vec3<float>::Distance(P, P_last);
                 }
 
                 mAccumulatedArcLength[i] = accumulator;
-                prev = current;
+                P_last = P;
             }
+
+            nbLogInfo("Curvature Min =[%.2f], Max = [%.2f]", cmin, cmax);
 
             //print info
             nbLogInfo("CtrlPts# %u, Splines# %u, CurvePts# %u, Length# %.2f",
@@ -164,6 +179,21 @@ namespace nb {
                 return Vec3<float>(0.0f);
         }
 
+        bool CatmullRomCurve::ComputePositionTangentAcceleration(float t, Vec3<float> &position,
+                                                                 Vec3<float> &tangent,
+                                                                 Vec3<float> &acceleration) {
+            float splineT;
+            std::array< Vec3<float>, 4> splineCtrlPoints;
+            if(!ExtractLocalSpline(t, splineT, splineCtrlPoints))
+                return false;
+
+            position = ComputeSplinePosition(splineT, splineCtrlPoints);
+            tangent = ComputeSplineTangent(splineT, splineCtrlPoints);
+            acceleration = ComputeSplineAcceleration(splineT, splineCtrlPoints);
+            return true;
+        }
+
+
         void CatmullRomCurve::RegisterOnCurveDataChangedCallBack(OnCurveDataChanged cb) {
             mFOnCurveDataChanged = cb;
         }
@@ -171,6 +201,9 @@ namespace nb {
         void CatmullRomCurve::Clear() {
             mCtrlPoints.resize(0);
             mCurveProfilePoints.resize(0);
+            mCurveProfileTangents.resize(0);
+            mCurveProfileAcceleration.resize(0);
+
             mKnotsLengthNormalized.resize(0);
             mAccumulatedArcLength.resize(0);
 
@@ -186,6 +219,13 @@ namespace nb {
             return mCurveProfilePoints;
         }
 
+        const std::vector<float> CatmullRomCurve::GetCurveProfileTangents() const {
+            return mCurveProfileTangents;
+        }
+
+        const std::vector<float> CatmullRomCurve::GetCurveProfileAcceleration() const {
+            return mCurveProfileAcceleration;
+        }
 
         void CatmullRomCurve::CopyFrom(const CatmullRomCurve &rhs) {
             mCtrlPoints.assign(rhs.mCtrlPoints.begin(), rhs.mCtrlPoints.end());

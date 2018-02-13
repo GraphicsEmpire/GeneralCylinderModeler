@@ -64,8 +64,9 @@ void mouse_handler(GLFWwindow *w, int button, int action, int mods) {
 }
 
 void fb_resize_handler(GLFWwindow* window, int width, int height) {
-    nb::opengl::GLRenderEngine::PreRender(0, 0, width, height);
+    PS_UNUSED(window);
 
+    nb::opengl::GLRenderEngine::SetViewPort(0, 0, width, height);
     std::cout << "FB Resized to [" << width << " x " << height << "]" << std::endl;
 }
 
@@ -107,7 +108,8 @@ int main(int argc, char *argv[]) {
     while (!glfwWindowShouldClose(w)) {
         int width, height;
         glfwGetFramebufferSize(w, &width, &height);
-        nb::opengl::GLRenderEngine::PreRender(0, 0, width, height);
+        nb::opengl::GLRenderEngine::SetViewPort(0, 0, width, height);
+        nb::opengl::GLRenderEngine::SetClearColor(Color::Grey());
 
         //render
         curverender->Render(gOrthoCamera->GetViewMatrix(0), gOrthoCamera->GetProjectionMatrix(0));

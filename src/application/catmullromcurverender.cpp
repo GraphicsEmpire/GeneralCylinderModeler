@@ -34,17 +34,13 @@ namespace nb {
             //create the vertex shader
             const char *vert = GLSL(410,
                                     layout(location = 0)
-                                            in
-                                            vec3 in_vertex;
-                                            uniform
-                                            mat4 ViewMatrix;
-                                            uniform
-                                            mat4 ProjMatrix;
-
-                                            void main() {
-                                                vec4 position = vec4(in_vertex, 1.0);
-                                                gl_Position = ProjMatrix * ViewMatrix * position;
-                                            }
+                                    in vec3 in_vertex;
+                                    uniform mat4 ViewMatrix;
+                                    uniform mat4 ProjMatrix;
+                                    void main() {
+                                        vec4 position = vec4(in_vertex, 1.0);
+                                        gl_Position = ProjMatrix * ViewMatrix * position;
+                                    }
             );
 
             //create the fragment shader for ctrl points
@@ -116,10 +112,23 @@ namespace nb {
                 GLMeshBuffer::GLVertexArrayPtrType vboCurveProfile = mCurveProfileMeshBuffer.AddVertexAttribArray();
 
                 //positions
-                std::vector<GLVertexArray::GLVertexAttribute> attr = {
-                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3)
+                std::vector<GLVertexArray::GLVertexAttribute> attribs = {
+                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kPosition, 3),
+//                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kNormal, 3),
+//                        GLVertexArray::GLVertexAttribute(GLVertexAttributeIndex::kWeight, 3),
                 };
-                mCurveProfileMeshBufferIsValid = vboCurveProfile->Import(attr, cdata.GetCurveProfilePoints());
+
+                vector<float> vpos = cdata.GetCurveProfilePoints();
+                vector<float> vtan = cdata.GetCurveProfileTangents();
+                vector<float> vacc = cdata.GetCurveProfileAcceleration();
+
+                vector<float> combined_cdata;
+                combined_cdata.insert(combined_cdata.end(), vpos.begin(), vpos.end());
+//                combined_cdata.insert(combined_cdata.end(), vtan.begin(), vtan.end());
+//                combined_cdata.insert(combined_cdata.end(), vacc.begin(), vacc.end());
+                U64 sz = combined_cdata.size();
+
+                mCurveProfileMeshBufferIsValid = vboCurveProfile->Import(attribs, combined_cdata, kSequentialBatch);
 
                 //index buffer for points
                 {

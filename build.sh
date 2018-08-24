@@ -1,6 +1,6 @@
 #!/bin/bash
 
-checkabortfailed()
+CheckAbortFailed()
 {
     if [ $1 -eq 0 ]
     then
@@ -11,7 +11,7 @@ checkabortfailed()
     fi
 }
 
-get_cur_dir() {
+GetCurrentDir() {
     SOURCE="${BASH_SOURCE[0]}"
 
     # resolve $SOURCE until the file is no longer a symlink
@@ -25,7 +25,7 @@ get_cur_dir() {
     DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 }
 
-get_cur_dir
+GetCurrentDir
 
 #######################################################################
 ## parameters to collect from the user
@@ -76,7 +76,7 @@ then
   pushd ${BUILD_DIR}
 	echo "INFO: Build for [${TARGET_OS}]"
 	cmake .. -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -DGLFW_DIR=${GLFW_DIR}
-	checkabortfailed $?
+	CheckAbortFailed $?
 
   echo "INFO: Count number of CPU cores on this machine"
   if [ "${TARGET_OS}" == "macos" ]; then
@@ -88,12 +88,12 @@ then
   echo "INFO: There are [${CPU_CORES_COUNT}] processor cores in this machine"
 	echo "INFO: Build project"
 	make -j${CPU_CORES_COUNT}
-	checkabortfailed $?
+	CheckAbortFailed $?
 
   ## make install
 	# echo "INFO: make install the project"
 	# make install
-	# checkabortfailed $?
+	# CheckAbortFailed $?
   # sync
 
   popd
@@ -106,13 +106,13 @@ then
     echo "Build for ${TARGET_OS}"
     ##cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Visual Studio 14 2015 Win64" ..
     cmake -DCMAKE_BUILD_TYPE=${BUILD_TYPE} -G "Visual Studio 15 2017 Win64" ..
-    checkabortfailed $?
+    CheckAbortFailed $?
 
     echo "Add MSBuild to path"
     ##export PATH="C:\Program Files (x86)\MSBuild\14.0\Bin":$PATH
     export PATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\MSBuild\15.0\Bin":$PATH
     MSBuild.exe *.sln /maxcpucount:${CPU_CORES_COUNT}
-    checkabortfailed $?
+    CheckAbortFailed $?
 
     popd
 else
